@@ -35,22 +35,35 @@ export default function MapComponent({ latitude, longitude }) {
       <Text>Open up App.js to start working on yosdfdsur app!</Text>
       <StatusBar style="auto" />
       <MapView
+        loadingEnabled
+        loadingIndicatorColo="red"
         initialRegion={{
           latitude,
           longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        showsCompass
+        showsIndoorLevelPicker
+        showsIndoors
+        showsMyLocationButton
+        showsBuildings
+        showsScale
+        showsUserLocation
+        userLocationAnnotationTitle="this is my location"
         style={styles.map}
       >
         {data.map((map, index) => {
           return (
             <Marker
               key={index}
+              tracksViewChanges
               coordinate={{
                 latitude: map.location.coordinates[1],
                 longitude: map.location.coordinates[0],
               }}
+              onSelect={() => console.log("on select >>>>>")}
+              onPress={() => console.log("on onPress >>>>>")}
               title={"samuel"}
               description={"hello samuel"}
             >

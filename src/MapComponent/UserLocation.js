@@ -3,7 +3,7 @@ import { Platform, Text, View, StyleSheet } from "react-native";
 import Device from "expo-device";
 import * as Location from "expo-location";
 import MapComponent from "./MapComponent";
-
+import BottomSheetRef from "./BottonSheetRef";
 export default function UserLocation() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -45,10 +45,13 @@ export default function UserLocation() {
   console.log("location.coords.latitude", location.coords.latitude);
   console.log("location.coords.longitude", location.coords.longitude);
   return (
-    <MapComponent
-      latitude={location.coords.latitude}
-      longitude={location.coords.longitude}
-    />
+    <>
+      <MapComponent
+        latitude={location.coords.latitude}
+        longitude={location.coords.longitude}
+      />
+      <BottomSheetRef />
+    </>
   );
 }
 
