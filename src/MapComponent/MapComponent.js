@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useQuery } from "react-query";
@@ -7,39 +7,56 @@ import { fetchData } from "../../helpers";
 import axios from "axios";
 
 export default function MapComponent({ latitude, longitude }) {
-  const { isLoading, error, data } = useQuery("data", () =>
-    fetchData(latitude, longitude)
-  );
+  // const {
+  //   isLoading,
+  //   error,
+  //   data = [],
+  // } = useQuery(["data", latitude, longitude], () =>
+  //   fetchData(latitude, longitude)
+  // );
+  const mapRef = useRef(null);
 
-  // useEffect(() => {
-  //   console.log("useEffect");
-  //   fetch("https://dark-red-catfish-tux.cyclic.app/")
-  //     .then((response) => console.log(">>>>> response", { response }))
-  //     .catch(console.log);
-  // }, []);
+  const [userCurrentLocation, setUserCurrentLocation] = useState([]);
 
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text>loading...</Text>
-        {/* <UserLocation /> */}
-      </View>
-    );
-  }
+  useEffect(() => {
+    const getDate = async () => {
+      console.log({ latitude, longitude });
+      const apidata = await fetchData(latitude, longitude);
+      console.log("useEfft", { useeff: apidata });
+      setUserCurrentLocation([...apidata]);
+      const region = {
+        latitude: latitude || 51.5072,
+        longitude: longitude || 0.1276,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      mapRef.current.animateToRegion(region, 1 * 1000);
+    };
+    getDate();
+  }, [latitude, longitude]);
+
+  // if (isLoading) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <Text>loading...</Text>
+  //       {/* <UserLocation /> */}
+  //     </View>
+  //   );
+  // }
 
   //console.log(">>>>>>> data", { data: data?.data });
   // console.log(">>>>>>> location", { data: data[0].location.coordinates });
-  console.log(">>>>>>> data", { data: data });
+  console.log(">>>>>>> data", { data: userCurrentLocation });
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on yosdfdsur app!</Text>
       <StatusBar style="auto" />
       <MapView
+        ref={mapRef}
         loadingEnabled
         loadingIndicatorColo="red"
         initialRegion={{
-          latitude,
-          longitude,
+          latitude: latitude,
+          longitude: longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -53,7 +70,7 @@ export default function MapComponent({ latitude, longitude }) {
         userLocationAnnotationTitle="this is my location"
         style={styles.map}
       >
-        {data.map((map, index) => {
+        {userCurrentLocation.map((map, index) => {
           return (
             <Marker
               key={index}
@@ -71,13 +88,6 @@ export default function MapComponent({ latitude, longitude }) {
             </Marker>
           );
         })}
-        {/* <Marker
-          coordinate={{ latitude: "13.0478078", longitude: "80.0442002" }}
-          title={"samuel"}
-          description={"hello samuel"}
-        >
-          <View style={styles.roundView}></View>
-        </Marker> */}
       </MapView>
     </View>
   );
@@ -114,13 +124,4 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderWidth: 2,
   },
-  // tail: {
-  //   width: 8,
-  //   height: 8,
-  //   borderRadius: 20,
-  //   backgroundColor: "#f0f0f0",
-  //   position: "absolute",
-  //   left: "50%",
-  //   transform: [{ translateY: 36 }, { translateX: -2 }],
-  // },
 });

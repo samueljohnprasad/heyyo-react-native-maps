@@ -35,20 +35,13 @@ export default function UserLocation() {
   }
   console.log({ location });
 
-  if (!location?.coords?.latitude)
-    return (
-      <View>
-        <Text> getting location...</Text>
-      </View>
-    );
-
-  console.log("location.coords.latitude", location.coords.latitude);
-  console.log("location.coords.longitude", location.coords.longitude);
+  console.log("location.coords.latitude", location?.coords?.latitude);
+  console.log("location.coords.longitude", location?.coords?.longitude);
   return (
     <>
       <MapComponent
-        latitude={location.coords.latitude}
-        longitude={location.coords.longitude}
+        latitude={location?.coords?.latitude || 0}
+        longitude={location?.coords?.longitude || 0}
       />
       <BottomSheetRef />
     </>

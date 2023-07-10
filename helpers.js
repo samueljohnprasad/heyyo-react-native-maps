@@ -10,7 +10,7 @@ export const fetchData = async (latitude, longitude) => {
         longitude,
       },
     });
-
+    console.log("response", { response: response.data });
     return response.data;
   } catch (e) {
     console.log({ e });
