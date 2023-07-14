@@ -24,15 +24,15 @@ export default function MapComponent({ latitude, longitude }) {
       const apidata = await fetchData(latitude, longitude);
       console.log("useEfft", { useeff: apidata });
       setUserCurrentLocation([...apidata]);
-      const region = {
-        latitude: latitude || 51.5072,
-        longitude: longitude || 0.1276,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      };
-      mapRef.current.animateToRegion(region, 1 * 1000);
     };
     getDate();
+    const region = {
+      latitude: latitude || 51.5072,
+      longitude: longitude || 0.1276,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    };
+    mapRef.current.animateToRegion(region, 1 * 1000);
   }, [latitude, longitude]);
 
   // if (isLoading) {

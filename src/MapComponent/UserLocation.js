@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Platform, Text, View, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { Platform, StyleSheet } from "react-native";
 import Device from "expo-device";
 import * as Location from "expo-location";
 import MapComponent from "./MapComponent";
 import BottomSheetRef from "./BottonSheetRef";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserCurrentLocationAction } from "../store/reducer";
 export default function UserLocation() {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -23,26 +24,26 @@ export default function UserLocation() {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      dispatch(
+        updateUserCurrentLocationAction({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        })
+      );
     })();
   }, []);
 
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
-  console.log({ location });
-
-  console.log("location.coords.latitude", location?.coords?.latitude);
-  console.log("location.coords.longitude", location?.coords?.longitude);
+  const loading = useSelector((store) => store.map.isLoading);
+  const latitude = useSelector(
+    (store) => store.map.userCurrentLocation.latitude
+  );
+  const longitude = useSelector(
+    (store) => store.map.userCurrentLocation.longitude
+  );
+  //console.log("loading>>>>>>>>>", { loading });
   return (
     <>
-      <MapComponent
-        latitude={location?.coords?.latitude || 0}
-        longitude={location?.coords?.longitude || 0}
-      />
+      <MapComponent latitude={latitude} longitude={longitude} />
       <BottomSheetRef />
     </>
   );
