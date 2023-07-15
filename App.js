@@ -10,6 +10,8 @@ import { store } from "./src/store/index";
 import { useAuth, AuthProvider } from "./AuthContext";
 import { useEffect } from "react";
 import * as secureStore from "expo-secure-store";
+import UserProfile from "./src/MapComponent/UserProfile";
+import PostOverViewModal from "./src/MapComponent/PostOverViewModal";
 const Stack = createNativeStackNavigator();
 
 export function Layout() {
@@ -41,11 +43,23 @@ export function Layout() {
             component={LoginPage}
           />
         ) : (
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="MapComponent"
-            component={UserLocation}
-          />
+          <>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="MapComponent"
+              component={UserLocation}
+            />
+            <Stack.Screen
+              options={{ headerShown: false, presentation: "modal" }}
+              name="Home"
+              component={UserProfile}
+            />
+            <Stack.Screen
+              options={{ headerShown: false, presentation: "modal" }}
+              name="PostOverViewModal"
+              component={PostOverViewModal}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,13 +1,28 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  Pressable,
+  Image,
+} from "react-native";
+import BottomSheet, {
+  BottomSheetView,
+  BottomSheetTextInput,
+} from "@gorhom/bottom-sheet";
 import { useAuth } from "../../AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import FontAwesome from "@expo/vector-icons/EvilIcons";
+
 const BottomSheetRef = () => {
   // ref
   const bottomSheetRef = useRef(null);
   const snapPoints = ["10%", "50%", "90%"];
   const [inputValue, setInputValue] = useState("");
   const { logout, userDetails } = useAuth();
+  const { navigate } = useNavigation();
   // callbacks
   const handleSheetChanges = useCallback((index) => {
     console.log("handleSheetChanges", index);
@@ -16,7 +31,10 @@ const BottomSheetRef = () => {
   const onChangeText = (text) => {
     setInputValue(text);
   };
-
+  const onPressProfile = () => {
+    navigate("Home");
+    console.log("home>>>>>>>>>>");
+  };
   // renders🥲
   return (
     <BottomSheet
@@ -24,17 +42,37 @@ const BottomSheetRef = () => {
       index={1}
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
+      keyboardBehavior="extend"
+      keyboardBlurBehavior="restore"
     >
       <View style={styles.contentContainer}>
-        <Text>{userDetails.userName} 🎉</Text>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+            // borderColor: "red",
+            // borderWidth: 1,
+            width: "80%",
+          }}
+        >
+          <Text>{userDetails.userName} 🎉</Text>
+          <Pressable onPress={onPressProfile}>
+            <FontAwesome name="user" size={50} color="black" />
+          </Pressable>
+        </View>
+
         <Button onPress={logout} title="Logout" />
         <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <TextInput
+          <BottomSheetTextInput
             value={inputValue}
             multiline={true}
             style={styles.input}
             placeholder="Enter text here..."
             numberOfLines={10}
+            onChangeText={onChangeText}
           />
           <Button disabled={!inputValue} title="Post" />
         </View>

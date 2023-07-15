@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import * as secureStore from "expo-secure-store";
 import axios from "axios";
-import { ActivityIndicator, Text, View } from "react-native";
+import { getBaseUrl } from "./helpers";
 
 export const TOKEN_KEY = "sdfjksd";
-const API_URL = "sdsfnlsdn";
 const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
 
@@ -54,9 +53,11 @@ export const AuthProvider = ({ children }) => {
   const guestLogin = async () => {
     try {
       setIsAuthLoading(true);
+      const guestUrl = `${getBaseUrl()}/guest-login`;
+      console.log({ guestUrl });
       const {
         data: { userName, userId, token },
-      } = await axios.post("http://localhost:3000/guest-login");
+      } = await axios.post(guestUrl);
 
       setAuthState({
         token: token,

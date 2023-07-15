@@ -5,6 +5,7 @@ import MapView, { Marker } from "react-native-maps";
 import { useQuery } from "react-query";
 import { fetchData } from "../../helpers";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 export default function MapComponent({ latitude, longitude }) {
   // const {
@@ -17,13 +18,13 @@ export default function MapComponent({ latitude, longitude }) {
   const mapRef = useRef(null);
 
   const [userCurrentLocation, setUserCurrentLocation] = useState([]);
-
+  const { navigate } = useNavigation();
   useEffect(() => {
     const getDate = async () => {
       console.log({ latitude, longitude });
       const apidata = await fetchData(latitude, longitude);
       console.log("useEfft", { useeff: apidata });
-      setUserCurrentLocation([...apidata]);
+      apidata && setUserCurrentLocation([...apidata]);
     };
     getDate();
     const region = {
@@ -79,7 +80,7 @@ export default function MapComponent({ latitude, longitude }) {
                 latitude: map.location.coordinates[1],
                 longitude: map.location.coordinates[0],
               }}
-              onSelect={() => console.log("on select >>>>>")}
+              onSelect={() => navigate("PostOverViewModal")}
               onPress={() => console.log("on onPress >>>>>")}
               title={"samuel"}
               description={"hello samuel"}
