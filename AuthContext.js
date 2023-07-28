@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import * as secureStore from "expo-secure-store";
 import axios from "axios";
 import { getBaseUrl } from "./helpers";
+import { useDispatch } from "react-redux";
+import { updateUserNameAndId } from "./src/store/reducer";
 
 export const TOKEN_KEY = "sdfjksd";
 const AuthContext = createContext({});
@@ -13,6 +15,7 @@ export const AuthProvider = ({ children }) => {
     token: null,
     authenticated: false,
   });
+  const dispatch = useDispatch();
 
   const [userDetails, setUserDetails] = useState({
     userName: "",
@@ -55,10 +58,10 @@ export const AuthProvider = ({ children }) => {
       setIsAuthLoading(true);
       const guestUrl = `${getBaseUrl()}/guest-login`;
       console.log({ guestUrl });
-      const {
-        data: { userName, userId, token },
-      } = await axios.post(guestUrl);
 
+      const result = await axios.post(guestUrl);
+      console.log("data guestLogin ", { result: result.data });
+      const { token, userName, userId } = result.data;
       setAuthState({
         token: token,
         authenticated: true,
@@ -68,6 +71,9 @@ export const AuthProvider = ({ children }) => {
         userName: userName,
         userId: userId,
       };
+      console.log("dispatch a");
+      dispatch(updateUserNameAndId(user));
+      console.log("dispatch b");
       setUserDetails(user);
       setIsAuthLoading(false);
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -81,8 +87,10 @@ export const AuthProvider = ({ children }) => {
         TOKEN_KEY,
         JSON.stringify(localStorageDetails)
       );
+
       return result;
     } catch (e) {
+      console.log("errror guestLogin", { e });
       return { error: true };
     }
   };

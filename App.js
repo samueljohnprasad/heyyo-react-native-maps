@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import * as secureStore from "expo-secure-store";
 import UserProfile from "./src/MapComponent/UserProfile";
 import PostOverViewModal from "./src/MapComponent/PostOverViewModal";
+import PageOverLay from "./src/MapComponent/PageOverLay";
 const Stack = createNativeStackNavigator();
 
 export function Layout() {
@@ -23,56 +24,58 @@ export function Layout() {
   //   };
   //   hey();
   // });
-  if (isAuthLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  // if (isAuthLoading) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //       <ActivityIndicator size="large" />
+  //     </View>
+  //   );
+  // }
 
   console.log("useAuth", { useAuth: useAuth() });
   console.log(">>>>>>> authstate", { authState, isAuthLoading });
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {!authState?.authenticated ? (
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Login"
-            component={LoginPage}
-          />
-        ) : (
-          <>
+    <PageOverLay isLoading={isAuthLoading}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {!authState?.authenticated ? (
             <Stack.Screen
               options={{ headerShown: false }}
-              name="MapComponent"
-              component={UserLocation}
+              name="Login"
+              component={LoginPage}
             />
-            <Stack.Screen
-              options={{ headerShown: false, presentation: "modal" }}
-              name="Home"
-              component={UserProfile}
-            />
-            <Stack.Screen
-              options={{ headerShown: false, presentation: "modal" }}
-              name="PostOverViewModal"
-              component={PostOverViewModal}
-            />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+          ) : (
+            <>
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="MapComponent"
+                component={UserLocation}
+              />
+              <Stack.Screen
+                options={{ headerShown: false, presentation: "modal" }}
+                name="Home"
+                component={UserProfile}
+              />
+              <Stack.Screen
+                options={{ headerShown: false, presentation: "modal" }}
+                name="PostOverViewModal"
+                component={PostOverViewModal}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PageOverLay>
   );
 }
 
 console.log("AuthProvider", { AuthProvider: AuthProvider });
 export default function App() {
   return (
-    <AuthProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <AuthProvider>
         <Layout />
-      </Provider>
-    </AuthProvider>
+      </AuthProvider>
+    </Provider>
   );
 }

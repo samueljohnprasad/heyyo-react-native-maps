@@ -7,6 +7,10 @@ export const initialState = {
     latitude: 0,
     longitude: 0,
   },
+  userDetails: {
+    userName: "",
+    id: 0,
+  },
 };
 
 export const slice = createSlice({
@@ -18,9 +22,14 @@ export const slice = createSlice({
       state.userCurrentLocation.latitude = action.payload.latitude;
       state.userCurrentLocation.longitude = action.payload.longitude;
     },
+    updateUserNameAndId: (state, action) => {
+      console.log("updateUserNameAndId >>", { action });
+      state.userDetails.userName = action.payload.userName;
+      state.userDetails.id = action.payload.userId;
+    },
   },
 });
 
 const { actions, reducer } = slice;
-export const { updateUserCurrentLocationAction } = actions;
+export const { updateUserCurrentLocationAction, updateUserNameAndId } = actions;
 export default reducer;

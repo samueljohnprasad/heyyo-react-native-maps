@@ -15,7 +15,9 @@ import BottomSheet, {
 import { useAuth } from "../../AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from "@expo/vector-icons/EvilIcons";
-
+import { useSelector } from "react-redux";
+import * as secureStore from "expo-secure-store";
+import { TOKEN_KEY } from "../../AuthContext";
 const BottomSheetRef = () => {
   // ref
   const bottomSheetRef = useRef(null);
@@ -23,6 +25,14 @@ const BottomSheetRef = () => {
   const [inputValue, setInputValue] = useState("");
   const { logout, userDetails } = useAuth();
   const { navigate } = useNavigation();
+  const [maxDistance, setMaxDistance] = React.useState("");
+  const latitude = useSelector(
+    (store) => store.map.userCurrentLocation.latitude
+  );
+  const longitude = useSelector(
+    (store) => store.map.userCurrentLocation.longitude
+  );
+
   // callbacks
   const handleSheetChanges = useCallback((index) => {
     console.log("handleSheetChanges", index);
@@ -36,6 +46,12 @@ const BottomSheetRef = () => {
     console.log("home>>>>>>>>>>");
   };
   // renders🥲
+  const onPressPost = async () => {
+    const localData = await secureStore.getItemAsync(TOKEN_KEY);
+    const { userName, userId } = JSON.parse(localData);
+
+    console.log({ latitude, longitude, maxDistance, userId, userName });
+  };
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -66,6 +82,12 @@ const BottomSheetRef = () => {
 
         <Button onPress={logout} title="Logout" />
         <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <TextInput
+            onChangeText={setMaxDistance}
+            value={maxDistance}
+            keyboardType="numeric"
+            placeholder="Enter max distance"
+          />
           <BottomSheetTextInput
             value={inputValue}
             multiline={true}
@@ -74,7 +96,7 @@ const BottomSheetRef = () => {
             numberOfLines={10}
             onChangeText={onChangeText}
           />
-          <Button disabled={!inputValue} title="Post" />
+          <Button disabled={!inputValue} title="Post" onPress={onPressPost} />
         </View>
       </View>
     </BottomSheet>
