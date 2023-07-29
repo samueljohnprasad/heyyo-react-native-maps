@@ -18,12 +18,16 @@ import FontAwesome from "@expo/vector-icons/EvilIcons";
 import { useSelector } from "react-redux";
 import * as secureStore from "expo-secure-store";
 import { TOKEN_KEY } from "../../AuthContext";
+import { postTheMessage } from "../store/thunk";
+import { useDispatch } from "react-redux";
+
 const BottomSheetRef = () => {
   // ref
   const bottomSheetRef = useRef(null);
   const snapPoints = ["10%", "50%", "90%"];
   const [inputValue, setInputValue] = useState("");
   const { logout, userDetails } = useAuth();
+  const dispatch = useDispatch();
   const { navigate } = useNavigation();
   const [maxDistance, setMaxDistance] = React.useState("");
   const latitude = useSelector(
@@ -49,7 +53,22 @@ const BottomSheetRef = () => {
   const onPressPost = async () => {
     const localData = await secureStore.getItemAsync(TOKEN_KEY);
     const { userName, userId } = JSON.parse(localData);
-
+    const callBackFunction = () => {
+      setInputValue("");
+      setMaxDistance("");
+    };
+    dispatch(
+      postTheMessage({
+        callBackFunction,
+        latitude,
+        longitude,
+        maxDistance,
+        userName,
+        message: inputValue,
+        createAt: new Date(),
+        userId,
+      })
+    );
     console.log({ latitude, longitude, maxDistance, userId, userName });
   };
   return (
@@ -59,7 +78,6 @@ const BottomSheetRef = () => {
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
       keyboardBehavior="extend"
-      keyboardBlurBehavior="restore"
     >
       <View style={styles.contentContainer}>
         <View
@@ -82,7 +100,7 @@ const BottomSheetRef = () => {
 
         <Button onPress={logout} title="Logout" />
         <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <TextInput
+          <BottomSheetTextInput
             onChangeText={setMaxDistance}
             value={maxDistance}
             keyboardType="numeric"

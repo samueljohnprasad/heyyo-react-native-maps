@@ -54,19 +54,16 @@ export default function MapComponent({ latitude, longitude }) {
       <MapView
         ref={mapRef}
         loadingEnabled
-        loadingIndicatorColo="red"
+        loadingIndicatorColor="red"
         initialRegion={{
           latitude: latitude,
           longitude: longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        showsCompass
-        showsIndoorLevelPicker
         showsIndoors
         showsMyLocationButton
         showsBuildings
-        showsScale
         showsUserLocation
         userLocationAnnotationTitle="this is my location"
         style={styles.map}
@@ -82,8 +79,8 @@ export default function MapComponent({ latitude, longitude }) {
               }}
               onSelect={() => navigate("PostOverViewModal")}
               onPress={() => console.log("on onPress >>>>>")}
-              title={"samuel"}
-              description={"hello samuel"}
+              title={map.userName}
+              description={map.message}
             >
               <View style={styles.roundView}></View>
             </Marker>

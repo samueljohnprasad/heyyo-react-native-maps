@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
       dispatch(updateUserNameAndId(user));
       console.log("dispatch b");
       setUserDetails(user);
-      setIsAuthLoading(false);
+
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       const localStorageDetails = {
@@ -92,6 +92,8 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {
       console.log("errror guestLogin", { e });
       return { error: true };
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 

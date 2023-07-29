@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginPage from "./src/MapComponent/LoginPage";
 import { ActivityIndicator, Text, View } from "react-native";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { store } from "./src/store/index";
 import { useAuth, AuthProvider } from "./AuthContext";
 import { useEffect } from "react";
@@ -17,6 +17,7 @@ const Stack = createNativeStackNavigator();
 
 export function Layout() {
   const { authState, isAuthLoading, guestLogin } = useAuth();
+  const isLoading = useSelector((store) => store.map.isLoading);
 
   // useEffect(() => {
   //   const hey = async () => {
@@ -35,7 +36,7 @@ export function Layout() {
   console.log("useAuth", { useAuth: useAuth() });
   console.log(">>>>>>> authstate", { authState, isAuthLoading });
   return (
-    <PageOverLay isLoading={isAuthLoading}>
+    <PageOverLay isLoading={isAuthLoading || isLoading}>
       <NavigationContainer>
         <Stack.Navigator>
           {!authState?.authenticated ? (
