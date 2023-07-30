@@ -90,6 +90,7 @@ export const AuthProvider = ({ children }) => {
 
       return result;
     } catch (e) {
+      console.log("guest login", { e: e });
       Toast.show({
         type: "error",
         text1: "Something went wrong!",
