@@ -13,6 +13,8 @@ import * as secureStore from "expo-secure-store";
 import UserProfile from "./src/MapComponent/UserProfile";
 import PostOverViewModal from "./src/MapComponent/PostOverViewModal";
 import PageOverLay from "./src/MapComponent/PageOverLay";
+import Toast from "react-native-toast-message";
+
 const Stack = createNativeStackNavigator();
 
 export function Layout() {
@@ -33,8 +35,6 @@ export function Layout() {
   //   );
   // }
 
-  console.log("useAuth", { useAuth: useAuth() });
-  console.log(">>>>>>> authstate", { authState, isAuthLoading });
   return (
     <PageOverLay isLoading={isAuthLoading || isLoading}>
       <NavigationContainer>
@@ -66,11 +66,11 @@ export function Layout() {
           )}
         </Stack.Navigator>
       </NavigationContainer>
+      <Toast />
     </PageOverLay>
   );
 }
 
-console.log("AuthProvider", { AuthProvider: AuthProvider });
 export default function App() {
   return (
     <Provider store={store}>

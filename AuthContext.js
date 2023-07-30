@@ -4,6 +4,7 @@ import axios from "axios";
 import { getBaseUrl } from "./helpers";
 import { useDispatch } from "react-redux";
 import { updateUserNameAndId } from "./src/store/reducer";
+import Toast from "react-native-toast-message";
 
 export const TOKEN_KEY = "sdfjksd";
 const AuthContext = createContext({});
@@ -32,10 +33,10 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       const parseLocalData = JSON.parse(localData);
-      console.log({ parseLocalData });
+
       if (parseLocalData?.token) {
         const { token, userName, userId } = parseLocalData;
-        console.log("userId", { token, userName, userId });
+
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         setAuthState({
           token,
@@ -57,10 +58,9 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsAuthLoading(true);
       const guestUrl = `${getBaseUrl()}/guest-login`;
-      console.log({ guestUrl });
 
       const result = await axios.post(guestUrl);
-      console.log("data guestLogin ", { result: result.data });
+
       const { token, userName, userId } = result.data;
       setAuthState({
         token: token,
@@ -71,9 +71,9 @@ export const AuthProvider = ({ children }) => {
         userName: userName,
         userId: userId,
       };
-      console.log("dispatch a");
+
       dispatch(updateUserNameAndId(user));
-      console.log("dispatch b");
+
       setUserDetails(user);
 
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -90,7 +90,10 @@ export const AuthProvider = ({ children }) => {
 
       return result;
     } catch (e) {
-      console.log("errror guestLogin", { e });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong!",
+      });
       return { error: true };
     } finally {
       setIsAuthLoading(false);
@@ -120,6 +123,6 @@ export const AuthProvider = ({ children }) => {
     isAuthLoading,
     userDetails,
   }));
-  console.log({ children });
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

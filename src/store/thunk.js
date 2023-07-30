@@ -1,15 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getBaseUrl } from "../../helpers";
 import axios from "axios";
+import Toast from "react-native-toast-message";
 
 export const postTheMessage = createAsyncThunk(
   "posts/postTheMessage",
   async ({ callBackFunction, ...postDetails }, { rejectWithValue }) => {
-    console.log("postTheMessage");
     try {
       const response = await axios.post(`${getBaseUrl()}/post`, postDetails);
-
-      console.log("response>>>>", { response: response.data });
 
       if (response.status === 201) {
         callBackFunction();
@@ -17,6 +15,10 @@ export const postTheMessage = createAsyncThunk(
       }
       return rejectWithValue("error");
     } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong!",
+      });
       return rejectWithValue(e);
     }
   }

@@ -20,6 +20,7 @@ import * as secureStore from "expo-secure-store";
 import { TOKEN_KEY } from "../../AuthContext";
 import { postTheMessage } from "../store/thunk";
 import { useDispatch } from "react-redux";
+import Toast from "react-native-toast-message";
 
 const BottomSheetRef = () => {
   // ref
@@ -38,16 +39,13 @@ const BottomSheetRef = () => {
   );
 
   // callbacks
-  const handleSheetChanges = useCallback((index) => {
-    console.log("handleSheetChanges", index);
-  }, []);
+  const handleSheetChanges = useCallback((index) => {}, []);
 
   const onChangeText = (text) => {
     setInputValue(text);
   };
   const onPressProfile = () => {
     navigate("Home");
-    console.log("home>>>>>>>>>>");
   };
   // renders🥲
   const onPressPost = async () => {
@@ -57,6 +55,7 @@ const BottomSheetRef = () => {
       setInputValue("");
       setMaxDistance("");
     };
+
     dispatch(
       postTheMessage({
         callBackFunction,

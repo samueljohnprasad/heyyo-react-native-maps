@@ -34,9 +34,8 @@ export default function MapComponent({ latitude, longitude }) {
   const [sliderPosts, setSliderPosts] = useState([]);
   useEffect(() => {
     const getDate = async () => {
-      console.log({ latitude, longitude });
       const apidata = await fetchData(latitude, longitude);
-      console.log("useEfft", { useeff: apidata });
+      //console.log("useEfft", { useeff: apidata });
       apidata && setUserCurrentLocation([...apidata]);
     };
     getDate();
@@ -64,7 +63,7 @@ export default function MapComponent({ latitude, longitude }) {
 
   //console.log(">>>>>>> data", { data: data?.data });
   // console.log(">>>>>>> location", { data: data[0].location.coordinates });
-  console.log(">>>>>>> data", { data: userCurrentLocation });
+  //console.log(">>>>>>> data", { data: userCurrentLocation });
   const onMapPostClick = (cluster) => {
     if (cluster.length == 1) return navigate("PostOverViewModal");
     setSliderPosts(cluster);
@@ -94,8 +93,8 @@ export default function MapComponent({ latitude, longitude }) {
         style={styles.map}
       >
         {userCurrentLocation.map((cluster, index) => {
-          console.log("cluster XXXXXX", { cluster });
-          console.log("zzzzzzzzzzzzzzzz", cluster?.length);
+          // console.log("cluster XXXXXX", { cluster });
+          // console.log("zzzzzzzzzzzzzzzz", cluster?.length);
           return (
             <Marker
               key={index}
@@ -140,20 +139,20 @@ export default function MapComponent({ latitude, longitude }) {
               marginHorizontal: 10,
             }}
           >
-            <View
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: "50%",
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Pressable onPress={onPressSliderPostsBack}>
-                <Ionicons name="ios-chevron-back" size={24} color="black" />
-              </Pressable>
-            </View>
+            <Pressable onPress={onPressSliderPostsBack}>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  backgroundColor: "white",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons name="ios-close" size={24} color="black" />
+              </View>
+            </Pressable>
             <View style={{ flexDirection: "row" }}>
               {sliderPosts.map((post, index) => {
                 return (
