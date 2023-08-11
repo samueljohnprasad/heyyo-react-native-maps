@@ -14,13 +14,19 @@ import UserProfile from "./src/MapComponent/UserProfile";
 import PostOverViewModal from "./src/MapComponent/PostOverViewModal";
 import PageOverLay from "./src/MapComponent/PageOverLay";
 import Toast from "react-native-toast-message";
+import { SocketProvider, useSocket } from "./SocketProvider";
 
 const Stack = createNativeStackNavigator();
 
 export function Layout() {
-  const { authState, isAuthLoading, guestLogin } = useAuth();
+  const {
+    authState,
+    isAuthLoading,
+    guestLogin,
+    userDetails: { userId },
+  } = useAuth();
   const isLoading = useSelector((store) => store.map.isLoading);
-
+  //const { socket } = useSocket();
   // useEffect(() => {
   //   const hey = async () => {
   //     await secureStore.deleteItemAsync("sdfsd");
@@ -35,37 +41,54 @@ export function Layout() {
   //   );
   // }
 
+  // useEffect(() => {
+  //   // console.log("s useEffect ");
+  //   if (userId) {
+  //     console.log("s useEffect ");
+  //     socket.query = { driverId: userId };
+  //     socket.connect();
+  //     socket.emit("send_message", { message: "hello baby" });
+  //   }
+  //   return () => {
+  //     if (socket) {
+  //       socket.disconnect();
+  //     }
+  //   };
+  // }, [userId]);
+
   return (
     <PageOverLay isLoading={isAuthLoading || isLoading}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          {!authState?.authenticated ? (
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="Login"
-              component={LoginPage}
-            />
-          ) : (
-            <>
+      <SocketProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            {!authState?.authenticated ? (
               <Stack.Screen
                 options={{ headerShown: false }}
-                name="MapComponent"
-                component={UserLocation}
+                name="Login"
+                component={LoginPage}
               />
-              <Stack.Screen
-                options={{ headerShown: false, presentation: "modal" }}
-                name="Home"
-                component={UserProfile}
-              />
-              <Stack.Screen
-                options={{ headerShown: false, presentation: "modal" }}
-                name="PostOverViewModal"
-                component={PostOverViewModal}
-              />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
+            ) : (
+              <>
+                <Stack.Screen
+                  options={{ headerShown: false }}
+                  name="MapComponent"
+                  component={UserLocation}
+                />
+                <Stack.Screen
+                  options={{ headerShown: false, presentation: "modal" }}
+                  name="Home"
+                  component={UserProfile}
+                />
+                <Stack.Screen
+                  options={{ headerShown: false, presentation: "modal" }}
+                  name="PostOverViewModal"
+                  component={PostOverViewModal}
+                />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SocketProvider>
       <Toast />
     </PageOverLay>
   );

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2a12f897-e0d6-4a43-b08f-158229650cac" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/AuthContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MapComponent/BottonSheetRef.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/MapComponent/BottonSheetRef.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MapComponent/MapComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/MapComponent/MapComponent.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MapComponent/PostOverViewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/MapComponent/PostOverViewModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MapComponent/UserLocation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/MapComponent/UserLocation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MapComponent/UserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/MapComponent/UserProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/reducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/yarn-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2Te0ttAmBxPoX2rC92pAO8QROZO" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "nodejs_package_manager_path": "yarn",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2a12f897-e0d6-4a43-b08f-158229650cac" name="Changes" comment="" />
+      <created>1691388457397</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1691388457397</updated>
+      <workItem from="1691388459042" duration="9000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

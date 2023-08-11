@@ -6,7 +6,9 @@ import { useDispatch } from "react-redux";
 import { updateUserNameAndId } from "./src/store/reducer";
 import Toast from "react-native-toast-message";
 
-export const TOKEN_KEY = "sdfjksd";
+export const TOKEN_KEY_USER_DETAILS = "sdfjksd";
+export const LOCATION_COORDS = "LOCATION_COORDS";
+
 const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
 
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadToken = async () => {
       setIsAuthLoading(true);
-      const localData = await secureStore.getItemAsync(TOKEN_KEY);
+      const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
 
       if (!localData) {
         setIsAuthLoading(false);
@@ -84,16 +86,15 @@ export const AuthProvider = ({ children }) => {
         userId: userId,
       };
       await secureStore.setItemAsync(
-        TOKEN_KEY,
+        TOKEN_KEY_USER_DETAILS,
         JSON.stringify(localStorageDetails)
       );
 
       return result;
     } catch (e) {
-      console.log("guest login", { e: e });
       Toast.show({
         type: "error",
-        text1: "Something went wrong!",
+        text1: "guest login failed!",
       });
       return { error: true };
     } finally {
@@ -103,7 +104,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setIsAuthLoading(true);
-    await secureStore.deleteItemAsync(TOKEN_KEY);
+    await secureStore.deleteItemAsync(TOKEN_KEY_USER_DETAILS);
     axios.defaults.headers.common["Authorization"] = "";
 
     setAuthState({

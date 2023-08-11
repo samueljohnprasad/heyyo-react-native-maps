@@ -17,7 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import FontAwesome from "@expo/vector-icons/EvilIcons";
 import { useSelector } from "react-redux";
 import * as secureStore from "expo-secure-store";
-import { TOKEN_KEY } from "../../AuthContext";
+import { TOKEN_KEY_USER_DETAILS } from "../../AuthContext";
 import { postTheMessage } from "../store/thunk";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
@@ -49,7 +49,7 @@ const BottomSheetRef = () => {
   };
   // renders🥲
   const onPressPost = async () => {
-    const localData = await secureStore.getItemAsync(TOKEN_KEY);
+    const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
     const { userName, userId } = JSON.parse(localData);
     const callBackFunction = () => {
       setInputValue("");
@@ -68,8 +68,8 @@ const BottomSheetRef = () => {
         userId,
       })
     );
-    console.log({ latitude, longitude, maxDistance, userId, userName });
   };
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -97,7 +97,6 @@ const BottomSheetRef = () => {
           </Pressable>
         </View>
 
-        <Button onPress={logout} title="Logout" />
         <View style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <BottomSheetTextInput
             onChangeText={setMaxDistance}

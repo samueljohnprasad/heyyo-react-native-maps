@@ -19,7 +19,7 @@ export const fetchData = async (latitude, longitude) => {
   } catch (e) {
     Toast.show({
       type: "error",
-      text1: "Something went wrong!",
+      text1: "error in fetching nearby posts",
     });
   }
 };

@@ -8,6 +8,7 @@ import {
   Dimensions,
   Pressable,
   TouchableHighlight,
+  Image,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useQuery } from "react-query";
@@ -15,8 +16,11 @@ import { fetchData } from "../../helpers";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { getDistance } from "geolib";
+import BOY from "../assets/users/boy.svg";
+import FontAwesome from "@expo/vector-icons/EvilIcons";
 
-export default function MapComponent({ latitude, longitude }) {
+export default function MapComponent({ latitude, longitude, activeUsers }) {
   // const {
   //   isLoading,
   //   error,
@@ -35,7 +39,6 @@ export default function MapComponent({ latitude, longitude }) {
   useEffect(() => {
     const getDate = async () => {
       const apidata = await fetchData(latitude, longitude);
-      //console.log("useEfft", { useeff: apidata });
       apidata && setUserCurrentLocation([...apidata]);
     };
     getDate();
@@ -52,26 +55,23 @@ export default function MapComponent({ latitude, longitude }) {
     setSliderPosts([]);
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text>loading...</Text>
-  //       {/* <UserLocation /> */}
-  //     </View>
-  //   );
-  // }
-
-  //console.log(">>>>>>> data", { data: data?.data });
-  // console.log(">>>>>>> location", { data: data[0].location.coordinates });
-  //console.log(">>>>>>> data", { data: userCurrentLocation });
   const onMapPostClick = (cluster) => {
-    if (cluster.length == 1) return navigate("PostOverViewModal");
+    if (cluster.length == 1)
+      return navigate("PostOverViewModal", { cluster: cluster[0] });
     setSliderPosts(cluster);
   };
 
-  const onPressSliderCard = () => {
-    navigate("PostOverViewModal");
+  const onPressSliderCard = (post) => {
+    navigate("PostOverViewModal", { cluster: post });
   };
+
+  const getDistanceHandler = (postLatitude, postLongitude) => {
+    return getDistance(
+      { latitude, longitude },
+      { latitude: postLatitude, longitude: postLongitude }
+    );
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -92,9 +92,37 @@ export default function MapComponent({ latitude, longitude }) {
         userLocationAnnotationTitle="this is my location"
         style={styles.map}
       >
+        {/* {allNearByUsers.map((map, index) => {
+          return (
+            <Marker
+              key={index}
+              tracksViewChanges
+              coordinate={{
+                latitude: map.coordinates[1],
+                longitude: map.coordinates[0],
+              }}
+              title="active user"
+            >
+              <FontAwesome name="star" size={50} color="black" />
+            </Marker>
+          );
+        })} */}
+        {activeUsers.map((map, index) => {
+          return (
+            <Marker
+              key={index}
+              tracksViewChanges
+              coordinate={{
+                latitude: map.coordinates[1],
+                longitude: map.coordinates[0],
+              }}
+              title="active user"
+            >
+              <FontAwesome name="user" size={50} color="black" />
+            </Marker>
+          );
+        })}
         {userCurrentLocation.map((cluster, index) => {
-          // console.log("cluster XXXXXX", { cluster });
-          // console.log("zzzzzzzzzzzzzzzz", cluster?.length);
           return (
             <Marker
               key={index}
@@ -156,10 +184,19 @@ export default function MapComponent({ latitude, longitude }) {
             <View style={{ flexDirection: "row" }}>
               {sliderPosts.map((post, index) => {
                 return (
-                  <Pressable key={index} onPress={onPressSliderCard}>
+                  <Pressable
+                    key={index}
+                    onPress={() => onPressSliderCard(post)}
+                  >
                     <View style={styles.card}>
                       <Text>{post.userName}</Text>
                       <Text>{post.message}</Text>
+                      <Text>
+                        {getDistanceHandler(
+                          post.location.coordinates[1],
+                          post.location.coordinates[0]
+                        )}
+                      </Text>
                     </View>
                   </Pressable>
                 );
@@ -203,6 +240,16 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderWidth: 2,
   },
+  roundViewRed: {
+    position: "relative",
+    width: 80,
+    height: 80,
+    borderRadius: 100,
+    backgroundColor: "red",
+    overflow: "visible",
+    borderColor: "black",
+    borderWidth: 2,
+  },
   card: {
     padding: 10,
     elevation: 2,
@@ -223,5 +270,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingVertical: 10,
+  },
+  tinyLogo: {
+    width: 60,
+    height: 60,
   },
 });
