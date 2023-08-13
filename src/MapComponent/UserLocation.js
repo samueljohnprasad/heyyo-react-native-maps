@@ -15,10 +15,10 @@ export default function UserLocation() {
   const {
     userDetails: { userId },
   } = useAuth();
-  const [usersOnMap, setUsersOnMap] = useState();
   const { socket } = useSocket();
   const [activeUsers, setActiveUsers] = useState([]);
   const [allNearByUsers, setAllNearByUsers] = useState([]);
+  const [count, setcount] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -47,11 +47,12 @@ export default function UserLocation() {
       );
 
       const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
-      const { userId } = JSON.parse(localData);
+      const { userId, userName } = JSON.parse(localData);
 
       socket.emit("update_userLocation", {
         ...localStorageCoords,
         userId,
+        userName,
       });
       socket.on("nearbyUsers", (data) => {
         setActiveUsers((prev) => [...prev, ...data]);
@@ -66,10 +67,26 @@ export default function UserLocation() {
     })();
   }, []);
 
+  const updateActiveusersAfterUserLef = (userId) => {
+    setActiveUsers((prev) => {
+      const updatedUsers = prev.filter((user) => {
+        if (user.userId === userId) {
+          return false;
+        }
+        return true;
+      });
+      return updatedUsers;
+    });
+    setcount(1);
+  };
+
   useEffect(() => {
     socket.on("locationUpdate", (user) => {
-      setUsersOnMap(user);
       setActiveUsers((prev) => [...prev, { ...user }]);
+    });
+
+    socket.on("locationUpdate_left_user", (data) => {
+      updateActiveusersAfterUserLef(data.userId);
     });
   }, []);
 
@@ -96,6 +113,9 @@ export default function UserLocation() {
   const longitude = useSelector(
     (store) => store.map.userCurrentLocation.longitude
   );
+
+  console.log("activeUsers return ", activeUsers.length);
+  console.log("setcount", count);
   return (
     <>
       <MapComponent

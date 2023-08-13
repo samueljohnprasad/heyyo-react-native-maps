@@ -6,7 +6,6 @@ import {
   TextInput,
   Button,
   Pressable,
-  Image,
 } from "react-native";
 import BottomSheet, {
   BottomSheetView,
@@ -21,6 +20,10 @@ import { TOKEN_KEY_USER_DETAILS } from "../../AuthContext";
 import { postTheMessage } from "../store/thunk";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
+import Panda from "../ComponentsSvg/Panda.js";
+import Svg, { Path } from "react-native-svg";
+import SvgComponent from "../ComponentsSvg/Boy.js";
+import { getImage } from "../utils/helpers";
 
 const BottomSheetRef = () => {
   // ref
@@ -73,10 +76,11 @@ const BottomSheetRef = () => {
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      index={1}
+      index={0}
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
       keyboardBehavior="extend"
+      style={{ backgroundColor: "#fff" }}
     >
       <View style={styles.contentContainer}>
         <View
@@ -93,7 +97,11 @@ const BottomSheetRef = () => {
         >
           <Text>{userDetails.userName} 🎉</Text>
           <Pressable onPress={onPressProfile}>
-            <FontAwesome name="user" size={50} color="black" />
+            <View style={{ width: 40, height: 40 }}>
+              {/* <SvgComponent /> */}
+              {getImage(userDetails.imageId)}
+              {/* <SvgComponent /> */}
+            </View>
           </Pressable>
         </View>
 
@@ -129,13 +137,17 @@ const styles = StyleSheet.create({
     height: 200,
     width: 300,
     flexWrap: "wrap",
-    borderColor: "#C0C0C0",
-    borderWidth: 1,
+    // borderColor: "#C0C0C0",
+    // borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: "#FFFFFF",
     textAlignVertical: "top",
+  },
+  logo: {
+    width: 66,
+    height: 58,
   },
 });
 

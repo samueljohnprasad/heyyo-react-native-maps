@@ -19,6 +19,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { getDistance } from "geolib";
 import BOY from "../assets/users/boy.svg";
 import FontAwesome from "@expo/vector-icons/EvilIcons";
+import { getImage } from "../utils/helpers";
+import { useAuth } from "../../AuthContext";
 
 export default function MapComponent({ latitude, longitude, activeUsers }) {
   // const {
@@ -28,6 +30,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
   // } = useQuery(["data", latitude, longitude], () =>
   //   fetchData(latitude, longitude)
   // );
+  const { userDetails } = useAuth();
   const mapRef = useRef(null);
   const { width, height } = Dimensions.get("window");
   const CARD_HEIGHT = height / 4;
@@ -76,6 +79,8 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
     <View style={styles.container}>
       <StatusBar style="auto" />
       <MapView
+        rotateEnabled={false}
+        pitchEnabled={false}
         ref={mapRef}
         loadingEnabled
         loadingIndicatorColor="red"
@@ -116,9 +121,16 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
                 latitude: map.coordinates[1],
                 longitude: map.coordinates[0],
               }}
-              title="active user"
+              title={map.userName || "activeUser"}
             >
-              <FontAwesome name="user" size={50} color="black" />
+              {/* <FontAwesome name="user" size={50} color="black" /> */}
+              {/* {getImage(userDetail?.imageId)} */}
+
+              <Pressable>
+                <View style={{ width: 40, height: 40 }}>
+                  {getImage(userDetails.imageId)}
+                </View>
+              </Pressable>
             </Marker>
           );
         })}

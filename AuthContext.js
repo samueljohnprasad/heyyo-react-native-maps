@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState({
     userName: "",
     userId: null,
+    imageId: 0,
   });
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       const parseLocalData = JSON.parse(localData);
 
       if (parseLocalData?.token) {
-        const { token, userName, userId } = parseLocalData;
+        const { token, userName, userId, imageId } = parseLocalData;
 
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         setAuthState({
@@ -48,6 +49,7 @@ export const AuthProvider = ({ children }) => {
         const user = {
           userName: userName,
           userId: userId,
+          imageId,
         };
         setUserDetails(user);
         setIsAuthLoading(false);
@@ -63,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
       const result = await axios.post(guestUrl);
 
-      const { token, userName, userId } = result.data;
+      const { token, userName, userId, imageId } = result.data;
       setAuthState({
         token: token,
         authenticated: true,
@@ -72,6 +74,7 @@ export const AuthProvider = ({ children }) => {
       const user = {
         userName: userName,
         userId: userId,
+        imageId,
       };
 
       dispatch(updateUserNameAndId(user));
@@ -84,6 +87,7 @@ export const AuthProvider = ({ children }) => {
         token: token,
         userName: userName,
         userId: userId,
+        imageId: imageId,
       };
       await secureStore.setItemAsync(
         TOKEN_KEY_USER_DETAILS,
@@ -114,6 +118,7 @@ export const AuthProvider = ({ children }) => {
     setUserDetails({
       userName: "",
       userId: null,
+      imageId: null,
     });
     setIsAuthLoading(false);
   };
