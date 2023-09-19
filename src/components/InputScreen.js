@@ -26,6 +26,7 @@ const YourScreenComponent = () => {
       >
         <View style={styles.content}>
           <TextInput
+            multiline
             style={styles.input}
             value={text}
             onChangeText={setText}
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   input: {
-    height: 40,
+    maxHeight: 100,
     // borderColor: "gray",
     // borderWidth: 1,
     flex: 1,

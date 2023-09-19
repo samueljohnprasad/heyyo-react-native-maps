@@ -9,6 +9,12 @@ import UserProfile from "./src/MapComponent/UserProfile";
 import PostOverViewModal from "./src/MapComponent/PostOverViewModal";
 import PageOverLay from "./src/MapComponent/PageOverLay";
 import Toast from "react-native-toast-message";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
+const queryClient = new QueryClient();
 
 const Stack = createNativeStackNavigator();
 
@@ -55,9 +61,11 @@ export function Layout() {
 export default function App() {
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <Layout />
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Layout />
+        </AuthProvider>
+      </QueryClientProvider>
     </Provider>
   );
 }

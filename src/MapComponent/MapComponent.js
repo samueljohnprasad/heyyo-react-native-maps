@@ -8,7 +8,6 @@ import {
   Dimensions,
   Pressable,
 } from "react-native";
-import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -18,6 +17,7 @@ import { useAuth } from "../../AuthContext";
 import { getNearByMePost } from "../store/thunk";
 import { useDispatch } from "react-redux";
 import usePostNearByme from "../hooks/usePostNearByme";
+import ClusteredMapView from "./ClusteredMapView/ClusteredMapView";
 
 export default function MapComponent({ latitude, longitude, activeUsers }) {
   const { userDetails } = useAuth();
@@ -76,7 +76,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <MapView
+      <ClusteredMapView
         clusterColor="#00B386"
         // clusterTextColor="#00B386"
         rotateEnabled={false}
@@ -166,7 +166,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
             </Marker>
           );
         })}
-      </MapView>
+      </ClusteredMapView>
       {!!sliderPosts.length && (
         <Animated.ScrollView
           horizontal
