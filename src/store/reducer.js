@@ -1,5 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { postTheMessage } from "./thunk";
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
+import { postTheMessage } from './thunk';
+
 export const initialState = {
   isLoading: false,
   isError: false,
@@ -8,13 +10,13 @@ export const initialState = {
     longitude: 0,
   },
   userDetails: {
-    userName: "",
+    userName: '',
     id: 0,
   },
 };
 
 export const slice = createSlice({
-  name: "map",
+  name: 'map',
   initialState,
   reducers: {
     updateUserCurrentLocationAction: (state, action) => {
@@ -27,7 +29,7 @@ export const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(postTheMessage.fulfilled, (state, { payload }) => {
+    builder.addCase(postTheMessage.fulfilled, (state) => {
       state.isLoading = false;
     });
 

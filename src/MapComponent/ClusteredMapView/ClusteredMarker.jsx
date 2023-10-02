@@ -1,11 +1,35 @@
-import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Marker } from "react-native-maps";
+/* eslint-disable react/prop-types */
+/* eslint-disable object-curly-newline */
+import React, { memo } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Marker } from 'react-native-maps';
 
-import { returnMarkerStyle } from "./helpers";
-import { getColorForRange } from "./helper";
+import { returnMarkerStyle } from './helpers';
+import { getColorForRange } from './helper';
 
-const ClusteredMarker = ({
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  wrapper: {
+    position: 'absolute',
+    opacity: 0.5,
+    zIndex: 0,
+  },
+  cluster: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  text: {
+    fontWeight: 'bold',
+  },
+});
+
+function ClusteredMarker({
   geometry,
   properties,
   onPress,
@@ -13,7 +37,7 @@ const ClusteredMarker = ({
   clusterTextColor,
   clusterFontFamily,
   tracksViewChanges,
-}) => {
+}) {
   const points = properties.point_count;
   const { width, height, fontSize, size } = returnMarkerStyle(points);
 
@@ -63,33 +87,11 @@ const ClusteredMarker = ({
                 fontFamily: clusterFontFamily,
               },
             ]}
-          ></Text>
+          />
         </View>
       </TouchableOpacity>
     </Marker>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  wrapper: {
-    position: "absolute",
-    opacity: 0.5,
-    zIndex: 0,
-  },
-  cluster: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1,
-  },
-  text: {
-    fontWeight: "bold",
-  },
-});
+}
 
 export default memo(ClusteredMarker);

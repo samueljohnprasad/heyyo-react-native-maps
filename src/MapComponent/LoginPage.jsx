@@ -1,14 +1,14 @@
-import { Text, View, Button } from "react-native";
-import { useAuth } from "../../AuthContext";
+import { Text, View, Button } from 'react-native';
+import { useAuth } from '../../AuthContext';
 
-const LoginPage = ({ navigation }) => {
+function LoginPage() {
   const { guestLogin } = useAuth();
 
   const onButtonPress = () => {
     guestLogin();
   };
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>LoginPage</Text>
       <Button
         onPress={onButtonPress}
@@ -18,6 +18,6 @@ const LoginPage = ({ navigation }) => {
       />
     </View>
   );
-};
+}
 
 export default LoginPage;

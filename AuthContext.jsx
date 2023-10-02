@@ -1,18 +1,18 @@
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
-import * as secureStore from "expo-secure-store";
-import axios from "axios";
-import { getBaseUrl } from "./helpers";
-import { useDispatch } from "react-redux";
-import { updateUserNameAndId } from "./src/store/reducer";
-import Toast from "react-native-toast-message";
+import { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import * as secureStore from 'expo-secure-store';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import Toast from 'react-native-toast-message';
+import { getBaseUrl } from './helpers';
+import { updateUserNameAndId } from './src/store/reducer';
 
-export const TOKEN_KEY_USER_DETAILS = "sdfjksd";
-export const LOCATION_COORDS = "LOCATION_COORDS";
+export const TOKEN_KEY_USER_DETAILS = 'sdfjksd';
+export const LOCATION_COORDS = 'LOCATION_COORDS';
 
 const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [authState, setAuthState] = useState({
     token: null,
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
 
   const [userDetails, setUserDetails] = useState({
-    userName: "",
+    userName: '',
     userId: null,
     imageId: 0,
   });
@@ -40,15 +40,15 @@ export const AuthProvider = ({ children }) => {
       if (parseLocalData?.token) {
         const { token, userName, userId, imageId } = parseLocalData;
 
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
         setAuthState({
           token,
           authenticated: true,
         });
 
         const user = {
-          userName: userName,
-          userId: userId,
+          userName,
+          userId,
           imageId,
         };
         setUserDetails(user);
@@ -67,13 +67,13 @@ export const AuthProvider = ({ children }) => {
 
       const { token, userName, userId, imageId } = result.data;
       setAuthState({
-        token: token,
+        token,
         authenticated: true,
       });
 
       const user = {
-        userName: userName,
-        userId: userId,
+        userName,
+        userId,
         imageId,
       };
 
@@ -81,24 +81,24 @@ export const AuthProvider = ({ children }) => {
 
       setUserDetails(user);
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       const localStorageDetails = {
-        token: token,
-        userName: userName,
-        userId: userId,
-        imageId: imageId,
+        token,
+        userName,
+        userId,
+        imageId,
       };
       await secureStore.setItemAsync(
         TOKEN_KEY_USER_DETAILS,
-        JSON.stringify(localStorageDetails)
+        JSON.stringify(localStorageDetails),
       );
 
       return result;
     } catch (e) {
       Toast.show({
-        type: "error",
-        text1: "guest login failed!",
+        type: 'error',
+        text1: 'guest login failed!',
       });
       return { error: true };
     } finally {
@@ -109,14 +109,14 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setIsAuthLoading(true);
     await secureStore.deleteItemAsync(TOKEN_KEY_USER_DETAILS);
-    axios.defaults.headers.common["Authorization"] = "";
+    axios.defaults.headers.common.Authorization = '';
 
     setAuthState({
       token: null,
       authenticated: false,
     });
     setUserDetails({
-      userName: "",
+      userName: '',
       userId: null,
       imageId: null,
     });
@@ -132,4 +132,4 @@ export const AuthProvider = ({ children }) => {
   }));
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}

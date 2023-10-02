@@ -1,25 +1,15 @@
-export function getColorForRange(range) {
-  // Ensure the range is between 0 and 100
-  range = Math.min(100, Math.max(0, range));
-
-  // Calculate the lightness value based on the range (direct mapping)
-  const lightness = 50 - (range / 100) * 25;
-
-  // Convert HSL color to RGB
-  const rgbColor = hslToRgb(120, 100, lightness);
-
-  // Format the RGB color
-  const formattedColor = `rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`;
-
-  return formattedColor;
-}
+/* eslint-disable no-multi-assign */
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/prefer-default-export */
 
 // Function to convert HSL color to RGB color
 function hslToRgb(h, s, l) {
   h /= 360;
   s /= 100;
   l /= 100;
-  let r, g, b;
+  let r;
+  let g;
+  let b;
 
   if (s === 0) {
     r = g = b = l;
@@ -41,4 +31,20 @@ function hslToRgb(h, s, l) {
   }
 
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+export function getColorForRange(range) {
+  // Ensure the range is between 0 and 100
+  range = Math.min(100, Math.max(0, range));
+
+  // Calculate the lightness value based on the range (direct mapping)
+  const lightness = 50 - (range / 100) * 25;
+
+  // Convert HSL color to RGB
+  const rgbColor = hslToRgb(120, 100, lightness);
+
+  // Format the RGB color
+  const formattedColor = `rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`;
+
+  return formattedColor;
 }

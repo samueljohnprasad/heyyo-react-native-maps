@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^18.0.1",
     "@gorhom/bottom-sheet": "^4",
     "@mapbox/geo-viewport": "^0.5.0",
@@ -25,6 +26,8 @@
     "expo-updates": "~0.16.4",
     "geolib": "^3.3.4",
     "install": "^0.13.0",
+    "javascript-time-ago": "^2.5.9",
+    "moment": "^2.29.4",
     "npm": "^9.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -39,16 +42,25 @@
     "react-native-safe-area-context": "4.5.0",
     "react-native-screens": "~3.20.0",
     "react-native-svg": "^13.11.0",
+    "react-native-timeago": "^0.5.0",
     "react-native-toast-message": "^2.1.6",
     "react-native-web": "~0.18.10",
     "react-query": "^3.39.3",
     "react-redux": "^8.1.1",
+    "react-time-ago": "^7.2.1",
     "redux-thunk": "^2.4.2",
     "socket.io-client": "^4.7.2",
     "supercluster": "^8.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "^3.0.3"
   },
   "private": true
 }

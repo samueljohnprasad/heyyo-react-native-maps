@@ -1,7 +1,21 @@
-import GeoViewport from "@mapbox/geo-viewport";
-import { Dimensions } from "react-native";
+/* eslint-disable no-plusplus */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable operator-linebreak */
+/* eslint-disable implicit-arrow-linebreak */
+import GeoViewport from '@mapbox/geo-viewport';
+import { Dimensions } from 'react-native';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
+
+const _removeChildrenFromProps = (props) => {
+  const newProps = {};
+  Object.keys(props).forEach((key) => {
+    if (key !== 'children') {
+      newProps[key] = props[key];
+    }
+  });
+  return newProps;
+};
 
 export const isMarker = (child) =>
   child &&
@@ -31,23 +45,21 @@ export const returnMapZoom = (region, bBox, minZoom) => {
   return viewport.zoom;
 };
 
-export const markerToGeoJSONFeature = (marker, index) => {
-  return {
-    type: "Feature",
-    geometry: {
-      coordinates: [
-        marker.props.coordinate.longitude,
-        marker.props.coordinate.latitude,
-      ],
-      type: "Point",
-    },
-    properties: {
-      point_count: 0,
-      index,
-      ..._removeChildrenFromProps(marker.props),
-    },
-  };
-};
+export const markerToGeoJSONFeature = (marker, index) => ({
+  type: 'Feature',
+  geometry: {
+    coordinates: [
+      marker.props.coordinate.longitude,
+      marker.props.coordinate.latitude,
+    ],
+    type: 'Point',
+  },
+  properties: {
+    point_count: 0,
+    index,
+    ..._removeChildrenFromProps(marker.props),
+  },
+});
 
 export const generateSpiral = (marker, clusterChildren, markers, index) => {
   const { properties, geometry } = marker;
@@ -144,14 +156,4 @@ export const returnMarkerStyle = (points) => {
     size: 36,
     fontSize: 15,
   };
-};
-
-const _removeChildrenFromProps = (props) => {
-  const newProps = {};
-  Object.keys(props).forEach((key) => {
-    if (key !== "children") {
-      newProps[key] = props[key];
-    }
-  });
-  return newProps;
 };

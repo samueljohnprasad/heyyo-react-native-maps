@@ -1,3 +1,15 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable indent */
+/* eslint-disable no-confusing-arrow */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable no-shadow */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-param-reassign */
+/* eslint-disable react/prop-types */
 import React, {
   forwardRef,
   memo,
@@ -5,19 +17,19 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { Dimensions, LayoutAnimation, Platform } from "react-native";
-import MapView, { MapViewProps, Polyline } from "react-native-maps";
-import SuperCluster from "supercluster";
+} from 'react';
+import { Dimensions, LayoutAnimation, Platform } from 'react-native';
+import MapView, { Polyline } from 'react-native-maps';
+import SuperCluster from 'supercluster';
 
-import ClusterMarker from "./ClusteredMarker";
+import ClusterMarker from './ClusteredMarker';
 import {
   calculateBBox,
   generateSpiral,
   isMarker,
   markerToGeoJSONFeature,
   returnMapZoom,
-} from "./helpers";
+} from './helpers';
 
 const ClusteredMapView = forwardRef(
   (
@@ -46,14 +58,14 @@ const ClusteredMapView = forwardRef(
       superClusterRef,
       ...restProps
     },
-    ref
+    ref,
   ) => {
     const [markers, updateMarkers] = useState([]);
     const [spiderMarkers, updateSpiderMarker] = useState([]);
     const [otherChildren, updateChildren] = useState([]);
     const [superCluster, setSuperCluster] = useState(null);
     const [currentRegion, updateRegion] = useState(
-      restProps.region || restProps.initialRegion
+      restProps.region || restProps.initialRegion,
     );
 
     const [isSpiderfier, updateSpiderfier] = useState(false);
@@ -62,12 +74,12 @@ const ClusteredMapView = forwardRef(
 
     const propsChildren = useMemo(
       () => React.Children.toArray(children),
-      [children]
+      [children],
     );
 
     useEffect(() => {
       const rawData = [];
-      const otherChildren = [];
+      const newOtherChildren = [];
 
       if (!clusteringEnabled) {
         updateSpiderMarker([]);
@@ -81,7 +93,7 @@ const ClusteredMapView = forwardRef(
         if (isMarker(child)) {
           rawData.push(markerToGeoJSONFeature(child, index));
         } else {
-          otherChildren.push(child);
+          newOtherChildren.push(child);
         }
       });
 
@@ -98,10 +110,10 @@ const ClusteredMapView = forwardRef(
 
       const bBox = calculateBBox(currentRegion);
       const zoom = returnMapZoom(currentRegion, bBox, minZoom);
-      const markers = superCluster.getClusters(bBox, zoom);
+      const newMarkers = superCluster.getClusters(bBox, zoom);
 
-      updateMarkers(markers);
-      updateChildren(otherChildren);
+      updateMarkers(newMarkers);
+      updateChildren(newOtherChildren);
       setSuperCluster(superCluster);
 
       superClusterRef.current = superCluster;
@@ -119,7 +131,7 @@ const ClusteredMapView = forwardRef(
           if (marker.properties.cluster) {
             spiralChildren = superCluster.getLeaves(
               marker.properties.cluster_id,
-              Infinity
+              Infinity,
             );
           }
           const positions = generateSpiral(marker, spiralChildren, markers, i);
@@ -137,17 +149,15 @@ const ClusteredMapView = forwardRef(
         const bBox = calculateBBox(region);
         const zoom = returnMapZoom(region, bBox, minZoom);
         const markers = superCluster.getClusters(bBox, zoom);
-        if (animationEnabled && Platform.OS === "ios") {
+        if (animationEnabled && Platform.OS === 'ios') {
           LayoutAnimation.configureNext(layoutAnimationConf);
         }
         if (zoom >= 18 && markers.length > 0 && clusterChildren) {
           if (spiralEnabled) {
             updateSpiderfier(true);
           }
-        } else {
-          if (spiralEnabled) {
-            updateSpiderfier(false);
-          }
+        } else if (spiralEnabled) {
+          updateSpiderfier(false);
         }
         updateMarkers(markers);
         onMarkersChange(markers);
@@ -218,16 +228,19 @@ const ClusteredMapView = forwardRef(
                 tracksViewChanges={tracksViewChanges}
               />
             )
-          ) : null
+          ) : null,
         )}
+
         {otherChildren}
-        {spiderMarkers.map((marker) => {
-          return propsChildren[marker.index]
-            ? React.cloneElement(propsChildren[marker.index], {
-                coordinate: { ...marker },
-              })
-            : null;
-        })}
+        <>
+          {spiderMarkers.map((marker) =>
+            propsChildren[marker.index]
+              ? React.cloneElement(propsChildren[marker.index], {
+                  coordinate: { ...marker },
+                })
+              : null,
+          )}
+        </>
         {spiderMarkers.map((marker, index) => (
           <Polyline
             key={index}
@@ -238,7 +251,7 @@ const ClusteredMapView = forwardRef(
         ))}
       </MapView>
     );
-  }
+  },
 );
 
 ClusteredMapView.defaultProps = {
@@ -249,18 +262,23 @@ ClusteredMapView.defaultProps = {
   layoutAnimationConf: LayoutAnimation.Presets.spring,
   tracksViewChanges: false,
   // SuperCluster parameters
-  radius: Dimensions.get("window").width * 0.25,
+  radius: Dimensions.get('window').width * 0.25,
   maxZoom: 20,
   minZoom: 1,
   minPoints: 2,
   extent: 512,
   nodeSize: 64,
   // Map parameters
-  edgePadding: { top: 50, left: 50, right: 50, bottom: 50 },
+  edgePadding: {
+    top: 50,
+    left: 50,
+    right: 50,
+    bottom: 50,
+  },
   // Cluster styles
-  clusterColor: "#00B386",
-  clusterTextColor: "#FFFFFF",
-  spiderLineColor: "#FF0000",
+  clusterColor: '#00B386',
+  clusterTextColor: '#FFFFFF',
+  spiderLineColor: '#FF0000',
   // Callbacks
   onRegionChangeComplete: () => {},
   onClusterPress: () => {},
