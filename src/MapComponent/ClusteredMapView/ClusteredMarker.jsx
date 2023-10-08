@@ -87,7 +87,9 @@ function ClusteredMarker({
                 fontFamily: clusterFontFamily,
               },
             ]}
-          />
+          >
+            {points}
+          </Text>
         </View>
       </TouchableOpacity>
     </Marker>

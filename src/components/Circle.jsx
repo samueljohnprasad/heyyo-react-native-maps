@@ -98,7 +98,7 @@ export function IntersectingCircles({ count, cluster }) {
             }),
           }}
         >
-          {getImage(cluster[0].user.imageId)}
+          {getImage(cluster?.[0]?.user?.imageId)}
         </View>
       </View>
     );
@@ -107,18 +107,16 @@ export function IntersectingCircles({ count, cluster }) {
   return (
     <View style={styles.containerr}>
       <View style={styles.imagesWrapper}>
-        {newClusters.map((post, index) => {
-          console.log('newClusters', post, newClusters.length);
-          return (
-            <Circle
-              imageId={post.user.imageId}
-              key={index}
-              zIndex={count - index}
-              top={0}
-              index={index}
-            />
-          );
-        })}
+        {newClusters.map((post, index) => (
+          // console.log('newClusters', post, newClusters.length);
+          <Circle
+            imageId={post.user.imageId}
+            key={index}
+            zIndex={count - index}
+            top={0}
+            index={index}
+          />
+        ))}
       </View>
       {cluster.length > 3 && (
         <Text style={{ fontSize: 18, paddingRight: 5, fontWeight: 800 }}>

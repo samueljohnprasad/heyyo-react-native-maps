@@ -12,7 +12,7 @@ function LoginPage() {
       <Text>LoginPage</Text>
       <Button
         onPress={onButtonPress}
-        title="Learn More"
+        title="Guest login"
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
       />

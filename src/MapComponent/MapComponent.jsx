@@ -1,8 +1,9 @@
+/* eslint-disable operator-linebreak */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable implicit-arrow-linebreak */
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -18,12 +19,12 @@ import {
   Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
+  Octicons,
 } from '@expo/vector-icons';
 import { getDistance } from 'geolib';
 import { useDispatch } from 'react-redux';
 import TimeAgo from 'react-native-timeago';
 import { getImage } from '../utils/helpers';
-import { useAuth } from '../../AuthContext';
 import { getNearByMePost } from '../store/thunk';
 import usePostNearByme from '../hooks/usePostNearByme';
 import ClusteredMapView from './ClusteredMapView/ClusteredMapView';
@@ -111,12 +112,12 @@ const styles = StyleSheet.create({
 });
 
 export default function MapComponent({ latitude, longitude, activeUsers }) {
-  const { userDetails } = useAuth();
   const dispatch = useDispatch();
   const mapRef = useRef(null);
   const { height } = Dimensions.get('window');
   const CARD_HEIGHT = height / 4;
   const CARD_WIDTH = CARD_HEIGHT - 50;
+  const [showActiveUsers, setShowActiveUsers] = useState(false);
 
   const { navigate } = useNavigation();
   // const [sliderPosts, setSliderPosts] = useState([]);
@@ -167,7 +168,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
 
     mapRef.current.animateToRegion(region, 2000);
   };
-
+  console.log('activeUsers', activeUsers);
   return (
     <View style={styles.container}>
       <StatusBar />
@@ -192,77 +193,122 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
         userLocationAnnotationTitle="this is my location"
         style={styles.map}
       >
-        <TouchableOpacity activeOpacity={0.7} onPress={animateToRegion}>
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              direction: 'rtl',
-              top: 70,
-              width: 40,
-              height: 40,
-              backgroundColor: 'white',
-              borderRadius: '50%',
-              position: 'absolute',
-              right: 20,
-              textAlign: 'right',
-              float: 'right',
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 2.84,
-                },
-              }),
-            }}
+        <View style={{ gap: 20 }}>
+          <TouchableOpacity activeOpacity={0.7} onPress={animateToRegion}>
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                direction: 'rtl',
+                top: 70,
+                width: 40,
+                height: 40,
+                backgroundColor: 'white',
+                borderRadius: '50%',
+                position: 'absolute',
+                right: 20,
+                textAlign: 'right',
+                float: 'right',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 2.84,
+                  },
+                }),
+              }}
+            >
+              <MaterialCommunityIcons
+                name="navigation-variant"
+                size={24}
+                color="black"
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => setShowActiveUsers((prev) => !prev)}
           >
-            <MaterialCommunityIcons
-              name="navigation-variant"
-              size={24}
-              color="black"
-            />
-          </View>
-        </TouchableOpacity>
-        {activeUsers.map((map, index) => (
-          <Marker
-            key={index}
-            tracksViewChanges
-            coordinate={{
-              latitude: map.coordinates[1],
-              longitude: map.coordinates[0],
-            }}
-            title={map.userName || 'activeUser'}
-          >
-            <TouchableOpacity activeOpacity={0.7}>
-              <View style={{ width: 40, height: 40 }}>
-                {getImage(userDetails.imageId)}
-              </View>
-            </TouchableOpacity>
-          </Marker>
-        ))}
-        {postNearByme.map((cluster, index) => (
-          <Marker
-            key={index}
-            tracksViewChanges
-            coordinate={{
-              latitude:
-                cluster.reduce(
-                  (acc, image) => acc + image.location.coordinates[1],
-                  0,
-                ) / cluster.length,
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                direction: 'rtl',
+                top: 120,
+                width: 40,
+                height: 40,
+                backgroundColor: 'white',
+                borderRadius: '50%',
+                position: 'absolute',
+                right: 20,
+                textAlign: 'right',
+                float: 'right',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 2.84,
+                  },
+                }),
+              }}
+            >
+              {!showActiveUsers && (
+                <Octicons name="people" size={24} color="black" />
+              )}
+              {showActiveUsers && (
+                <MaterialCommunityIcons
+                  name="post-outline"
+                  size={24}
+                  color="black"
+                />
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
+        {showActiveUsers &&
+          activeUsers.map((map, index) => (
+            <Marker
+              key={index}
+              tracksViewChanges
+              coordinate={{
+                latitude: map.coordinates[1],
+                longitude: map.coordinates[0],
+              }}
+              title={map.userName || 'activeUser'}
+            >
+              <TouchableOpacity activeOpacity={0.7}>
+                <View style={{ width: 40, height: 40 }}>
+                  {getImage(map.imageId)}
+                </View>
+              </TouchableOpacity>
+            </Marker>
+          ))}
+        {!showActiveUsers &&
+          postNearByme.map((cluster, index) => (
+            <Marker
+              key={index}
+              tracksViewChanges
+              coordinate={{
+                latitude:
+                  cluster.reduce(
+                    (acc, image) => acc + image.location.coordinates[1],
+                    0,
+                  ) / cluster.length,
 
-              longitude:
-                cluster.reduce(
-                  (acc, image) => acc + image.location.coordinates[0],
-                  0,
-                ) / cluster.length,
-            }}
-            onPress={() => onMapPostClick(index, cluster)}
-            // title={cluster.length.toString()}
-          >
-            {/* <View
+                longitude:
+                  cluster.reduce(
+                    (acc, image) => acc + image.location.coordinates[0],
+                    0,
+                  ) / cluster.length,
+              }}
+              onPress={() => onMapPostClick(index, cluster)}
+              // title={cluster.length.toString()}
+            >
+              {/* <View
               style={{
                 padding: 5,
                 backgroundColor: '#fff',
@@ -270,12 +316,12 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
                 flexDirection: 'row',
               }}
             > */}
-            {/* <View style={styles.roundView}>{getImage(0)}</View>
+              {/* <View style={styles.roundView}>{getImage(0)}</View>
               <View style={styles.roundView}>{getImage(2)}</View> */}
-            <IntersectingCircles count={1} cluster={cluster} />
-            {/* </View> */}
-          </Marker>
-        ))}
+              <IntersectingCircles count={1} cluster={cluster} />
+              {/* </View> */}
+            </Marker>
+          ))}
       </ClusteredMapView>
       {!!sliderPosts.length && (
         <Animated.ScrollView

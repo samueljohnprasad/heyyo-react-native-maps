@@ -188,6 +188,7 @@ const ClusteredMapView = forwardRef(
 
       onClusterPress(cluster, children);
     };
+   // console.log('marker', { markers });
 
     return (
       <MapView

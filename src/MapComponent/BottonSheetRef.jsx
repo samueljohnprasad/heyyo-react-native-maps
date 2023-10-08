@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-curly-newline */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -12,9 +13,26 @@ import BottomSheet, { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import * as secureStore from 'expo-secure-store';
+// import styled from '@emotion/native';
 import { TOKEN_KEY_USER_DETAILS, useAuth } from '../../AuthContext';
 import { getImage } from '../utils/helpers';
 import { postNewPost, realTimeNewPostUpdates } from '../store/sockets';
+import PulsatingCircle from './PulsatingCircle';
+
+// const ButtonStyled = styled.View`
+//   color: turquoise;
+//   background-color: red;
+//   background-color: linear-gradient(
+//     180deg,
+//     rgba(255, 255, 255, 0) 0%,
+//     rgba(255, 255, 255, 0.5) 100%
+//   );
+//   border-radius: 50%;
+//   width: 100px;
+//   height: 100px;
+// `;
+
+// You can now use the 'PulsatingCircle' component in your React application
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -166,7 +184,7 @@ function BottomSheetRef() {
               }}
               value={maxDistance}
               keyboardType="numeric"
-              placeholder="Enter max distance"
+              placeholder="Enter max distance to reach in meters"
             />
           </View>
 
@@ -174,13 +192,15 @@ function BottomSheetRef() {
             value={inputValue}
             multiline
             style={styles.input}
-            placeholder="Enter text here..."
+            placeholder="ask or say something to nearby people"
             numberOfLines={10}
             onChangeText={onChangeText}
           />
           <Button disabled={!inputValue} title="Post" onPress={onPressPost} />
         </View>
       </View>
+
+      <PulsatingCircle />
     </BottomSheet>
   );
 }

@@ -49,12 +49,13 @@ export default function UserLocation() {
       );
 
       const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
-      const { userId: userIdLocal, userName } = JSON.parse(localData);
+      const { userId: userIdLocal, userName, imageId } = JSON.parse(localData);
 
       socket.emit('update_userLocation', {
         ...localStorageCoords,
         userId: userIdLocal,
         userName,
+        imageId,
       });
       socket.on('nearbyUsers', (data) => {
         setActiveUsers((prev) => [...prev, ...data]);
