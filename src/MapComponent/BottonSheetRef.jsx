@@ -1,24 +1,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-curly-newline */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  Pressable,
-  Platform,
-} from 'react-native';
-import BottomSheet, { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
-import * as secureStore from 'expo-secure-store';
-// import styled from '@emotion/native';
-import { TOKEN_KEY_USER_DETAILS, useAuth } from '../../AuthContext';
+import React, { useCallback, useRef, useState } from 'react';
+import { View, Text, Platform, Pressable, Dimensions } from 'react-native';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { MaterialIcons } from '@expo/vector-icons';
+import BlurredBackground from './BlurredBackground';
+import MakePost, { styles } from './MakePost';
 import { getImage } from '../utils/helpers';
-import { postNewPost, realTimeNewPostUpdates } from '../store/sockets';
-import PulsatingCircle from './PulsatingCircle';
-
+import { useAuth } from '../../AuthContext';
+import Event from './Event';
+import { BlurView } from 'expo-blur';
+import { useSharedValue, useDerivedValue } from 'react-native-reanimated';
+import Weather from './Weather';
 // const ButtonStyled = styled.View`
 //   color: turquoise;
 //   background-color: red;
@@ -32,177 +25,159 @@ import PulsatingCircle from './PulsatingCircle';
 //   height: 100px;
 // `;
 
-// You can now use the 'PulsatingCircle' component in your React application
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 10,
-  },
-  input: {
-    minHeight: 100,
-    height: 200,
-    width: 300,
-    flexWrap: 'wrap',
-    // borderColor: "#C0C0C0",
-    // borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#FFFFFF',
-    textAlignVertical: 'top',
-  },
-  logo: {
-    width: 66,
-    height: 58,
-  },
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 100,
-    backgroundColor: '#f0f0f0',
-    overflow: 'visible',
-    borderColor: 'black',
-    borderWidth: 1,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2.84,
-      },
-    }),
-  },
-});
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 function BottomSheetRef() {
   const bottomSheetRef = useRef(null);
-  const snapPoints = ['10%', '50%', '90%'];
-  const [inputValue, setInputValue] = useState('');
+  const snapPoints = ['9%', '16%', '50%', '90%'];
+  const [selectedTab, setSelectedTab] = useState(0);
   const { userDetails } = useAuth();
-  const dispatch = useDispatch();
-  const { navigate } = useNavigation();
-  const [maxDistance, setMaxDistance] = React.useState('');
-  const latitude = useSelector(
-    (store) => store.map.userCurrentLocation.latitude,
+  const animatedPOIListIndex = useSharedValue(0);
+  const animatedPOIListPosition = useSharedValue(SCREEN_HEIGHT);
+
+  const weatherAnimatedIndex = useDerivedValue(
+    () => animatedPOIListIndex.value,
   );
-  const longitude = useSelector(
-    (store) => store.map.userCurrentLocation.longitude,
+  const weatherAnimatedPosition = useDerivedValue(
+    () => animatedPOIListPosition.value,
   );
 
-  const handleSheetChanges = useCallback(() => {}, []);
+  const components = [
+    <MakePost />,
+    <Event />,
+    <View>
+      <Text>hi</Text>
+    </View>,
+  ];
 
-  const onChangeText = (text) => {
-    setInputValue(text);
-  };
-  const onPressProfile = () => {
-    navigate('Home');
-  };
+  const currentSnapPointIndex = useRef(0);
 
-  useEffect(() => {
-    dispatch(realTimeNewPostUpdates());
+  const handleSheetChanges = useCallback((index) => {
+    currentSnapPointIndex.current = index;
   }, []);
 
-  const onPressPost = async () => {
-    const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
-    const { userName, userId } = JSON.parse(localData);
-    const callBackFunction = () => {
-      setInputValue('');
-      setMaxDistance('');
-    };
-
-    const newPost = {
-      callBackFunction,
-      latitude,
-      longitude,
-      maxDistance,
-      userName,
-      message: inputValue.trim(),
-      userId,
-    };
-    dispatch(postNewPost(newPost));
+  const openBottomSheetToSnapPoint = (tab) => {
+    setSelectedTab(tab);
+    if (!(currentSnapPointIndex.current === 0)) return;
+    bottomSheetRef.current.snapToIndex(2);
   };
 
   return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={0}
-      snapPoints={snapPoints}
-      onChange={handleSheetChanges}
-      keyboardBehavior="extend"
-      style={{
-        backgroundColor: '#fff',
-        ...Platform.select({
-          ios: {
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.3,
-            shadowRadius: 2.84,
-          },
-        }),
-      }}
-    >
-      <View style={styles.contentContainer}>
-        <View
+    <>
+      <Weather
+        animatedIndex={weatherAnimatedIndex}
+        animatedPosition={weatherAnimatedPosition}
+      />
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={1}
+        animatedPosition={animatedPOIListPosition}
+        animatedIndex={animatedPOIListIndex}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        keyboardBehavior="extend"
+        // backgroundStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.60)' }}
+        backgroundComponent={BlurredBackground}
+        style={{
+          borderWidth: 0.5,
+          borderColor: 'rgba(0, 0, 0, 0.12)',
+          backgroundColor: 'rgba(255, 255, 255, 0.85)',
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          ...Platform.select({
+            ios: {
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.3,
+              shadowRadius: 2.84,
+            },
+          }),
+        }}
+      >
+        {components[selectedTab]}
+      </BottomSheet>
+      <BlurView
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          flexDirection: 'row',
+          // backgroundColor: 'white',
+          backgroundColor: 'rgba(255, 255, 255, 0.30)',
+          justifyContent: 'space-around',
+          borderWidth: 0.5,
+          borderColor: 'rgba(0, 0, 0, 0.12)',
+          height: '9%',
+        }}
+      >
+        <Pressable
           style={{
+            paddingTop: 22,
+            paddingBottom: 22,
+            flex: 1,
+            textAlign: 'center',
             display: 'flex',
-            justifyContent: 'flex-end',
-            flexDirection: 'row',
+            justifyContent: 'center',
             alignItems: 'center',
-            gap: 10,
-            // borderColor: "red",
-            // borderWidth: 1,
-            width: '80%',
           }}
+          suppressHighlighting
+          onPress={() => openBottomSheetToSnapPoint(0)}
         >
-          <Text>{userDetails.userName}</Text>
-          <Pressable onPress={onPressProfile}>
-            <View style={styles.circle}>
-              {/* <SvgComponent /> */}
-              {getImage(userDetails.imageId)}
-              {/* <SvgComponent /> */}
-            </View>
-          </Pressable>
-        </View>
-
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 20,
-          }}
-        >
-          <View>
-            <BottomSheetTextInput
-              onChangeText={(value) => {
-                if (/^\d*\.?\d{0,2}$/.test(value)) {
-                  if (parseFloat(value) <= 6000 || value === '') {
-                    setMaxDistance(value);
-                  }
-                }
-              }}
-              value={maxDistance}
-              keyboardType="numeric"
-              placeholder="Enter max distance to reach in meters"
-            />
-          </View>
-
-          <BottomSheetTextInput
-            value={inputValue}
-            multiline
-            style={styles.input}
-            placeholder="ask or say something to nearby people"
-            numberOfLines={10}
-            onChangeText={onChangeText}
+          <MaterialIcons
+            name="post-add"
+            size={30}
+            color={selectedTab == 0 ? 'blue' : 'black'}
           />
-          <Button disabled={!inputValue} title="Post" onPress={onPressPost} />
-        </View>
-      </View>
-
-      <PulsatingCircle />
-    </BottomSheet>
+        </Pressable>
+        <Pressable
+          suppressHighlighting
+          onPress={() => openBottomSheetToSnapPoint(1)}
+          style={{
+            paddingTop: 22,
+            paddingBottom: 22,
+            flex: 1,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <MaterialIcons
+            name="event-note"
+            size={30}
+            color={selectedTab == 1 ? 'blue' : 'black'}
+          />
+        </Pressable>
+        <Pressable
+          suppressHighlighting
+          onPress={() => openBottomSheetToSnapPoint(2)}
+          style={{
+            paddingTop: 22,
+            paddingBottom: 22,
+            flex: 1,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={[
+              styles.circle,
+              selectedTab !== 2 && {
+                borderColor: 'black',
+                shadowColor: 'black',
+              },
+            ]}
+          >
+            {getImage(userDetails.imageId)}
+          </View>
+        </Pressable>
+      </BlurView>
+    </>
   );
 }
 
 export default BottomSheetRef;
+// rgba(255, 255, 255, 0.60)

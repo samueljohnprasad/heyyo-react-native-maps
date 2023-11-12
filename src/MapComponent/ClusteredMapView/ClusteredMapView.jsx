@@ -188,10 +188,12 @@ const ClusteredMapView = forwardRef(
 
       onClusterPress(cluster, children);
     };
-   // console.log('marker', { markers });
+    // console.log('marker', { markers });
 
     return (
       <MapView
+        // provider={'google'}
+        loadingEnabled
         {...restProps}
         ref={(map) => {
           mapRef.current = map;

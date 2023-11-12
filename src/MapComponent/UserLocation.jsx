@@ -1,12 +1,17 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react/jsx-no-useless-fragment */
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import Device from 'expo-device';
 import * as Location from 'expo-location';
 import { useDispatch, useSelector } from 'react-redux';
 import * as secureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
 import MapComponent from './MapComponent';
+
 import BottomSheetRef from './BottonSheetRef';
+
 import { updateUserCurrentLocationAction } from '../store/reducer';
 import {
   LOCATION_COORDS,
@@ -14,6 +19,16 @@ import {
   TOKEN_KEY_USER_DETAILS,
 } from '../../AuthContext';
 import { socket } from '../network/socket';
+
+// const StyledBottom = styled.View`
+//   height: 200px;
+//   overflow: visible;
+//   background-color: green;
+//   &:first-child {
+//     background-color: yellow;
+//     overflow: visible;
+//   }
+// `;
 
 export default function UserLocation() {
   const dispatch = useDispatch();
@@ -24,12 +39,12 @@ export default function UserLocation() {
 
   useEffect(() => {
     (async () => {
-      if (Platform.OS === 'android' && !Device.isDevice) {
-        Toast.show(
-          'Oops, this will not work on Snack in an Android Emulator. Try it on your device!',
-        );
-        return;
-      }
+      // if (!Device.isDevice) {
+      //   Toast.show(
+      //     'Oops, this will not work on Snack in an Android Emulator. Try it on your device!',
+      //   );
+      //   return;
+      // }
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         Toast.show('Permission to access location was denied');
@@ -115,13 +130,13 @@ export default function UserLocation() {
   );
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <MapComponent
         activeUsers={activeUsers}
         latitude={latitude}
         longitude={longitude}
       />
       <BottomSheetRef />
-    </>
+    </View>
   );
 }

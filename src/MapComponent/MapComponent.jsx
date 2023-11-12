@@ -2,7 +2,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable implicit-arrow-linebreak */
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
@@ -31,6 +30,7 @@ import ClusteredMapView from './ClusteredMapView/ClusteredMapView';
 import useSelectedCluster from '../hooks/useSelectedCluster';
 import { updateSelectedCluster } from '../store/post.reducer';
 import { IntersectingCircles } from '../components/Circle';
+import Compass from '../ComponentsSvg/Compass';
 
 const styles = StyleSheet.create({
   container: {
@@ -168,10 +168,9 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
 
     mapRef.current.animateToRegion(region, 2000);
   };
-  console.log('activeUsers', activeUsers);
+  console.log('activeUsers>>>>>>>>>>>>>', activeUsers);
   return (
     <View style={styles.container}>
-      <StatusBar />
       <ClusteredMapView
         clusterColor="#00B386"
         // clusterTextColor="#00B386"
@@ -179,6 +178,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
         pitchEnabled={false}
         ref={mapRef}
         loadingEnabled
+        // followsUserLocation
         loadingIndicatorColor="red"
         initialRegion={{
           latitude,
@@ -186,89 +186,17 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        moveOnMarkerPress
         showsIndoors
         showsMyLocationButton
         showsBuildings
         showsUserLocation
         userLocationAnnotationTitle="this is my location"
         style={styles.map}
+        // userInterfaceStyle="dark"
+        // userLocationFastestInterval={5000}
+        // onUserLocationChange={() => console.log('onUserLocationChange')}
       >
-        <View style={{ gap: 20 }}>
-          <TouchableOpacity activeOpacity={0.7} onPress={animateToRegion}>
-            <View
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                direction: 'rtl',
-                top: 70,
-                width: 40,
-                height: 40,
-                backgroundColor: 'white',
-                borderRadius: '50%',
-                position: 'absolute',
-                right: 20,
-                textAlign: 'right',
-                float: 'right',
-                ...Platform.select({
-                  ios: {
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 2.84,
-                  },
-                }),
-              }}
-            >
-              <MaterialCommunityIcons
-                name="navigation-variant"
-                size={24}
-                color="black"
-              />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setShowActiveUsers((prev) => !prev)}
-          >
-            <View
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                direction: 'rtl',
-                top: 120,
-                width: 40,
-                height: 40,
-                backgroundColor: 'white',
-                borderRadius: '50%',
-                position: 'absolute',
-                right: 20,
-                textAlign: 'right',
-                float: 'right',
-                ...Platform.select({
-                  ios: {
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 2.84,
-                  },
-                }),
-              }}
-            >
-              {!showActiveUsers && (
-                <Octicons name="people" size={24} color="black" />
-              )}
-              {showActiveUsers && (
-                <MaterialCommunityIcons
-                  name="post-outline"
-                  size={24}
-                  color="black"
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
         {showActiveUsers &&
           activeUsers.map((map, index) => (
             <Marker
@@ -429,6 +357,79 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
           </View>
         </Animated.ScrollView>
       )}
+      <View
+        style={{
+          position: 'absolute',
+          top: 70,
+          right: 30,
+          backgroundColor: '#FBFBFB',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderTopRightRadius: 10,
+          borderTopLeftRadius: 10,
+          borderBottomLeftRadius: 10,
+          borderBottomRightRadius: 10,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            direction: 'rtl',
+            textAlign: 'right',
+            float: 'right',
+            width: 40,
+            height: 40,
+            borderBottomWidth: 0.3,
+            borderBottomColor: '#B7B7B5',
+          }}
+          activeOpacity={0.7}
+          onPress={animateToRegion}
+        >
+          {/* <MaterialCommunityIcons
+            name="navigation-variant"
+            size={24}
+            color="black"
+          /> */}
+          <Compass />
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => setShowActiveUsers((prev) => !prev)}
+        >
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 40,
+              height: 40,
+            }}
+          >
+            {!showActiveUsers && (
+              <Octicons name="people" size={24} color="#6C6C6C" />
+            )}
+            {showActiveUsers && (
+              <MaterialCommunityIcons
+                name="post-outline"
+                size={24}
+                color="#6C6C6C"
+              />
+            )}
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
+
+// ...Platform.select({
+//   ios: {
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.3,
+//     shadowRadius: 2.84,
+//   },
+// }),

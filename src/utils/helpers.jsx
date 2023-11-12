@@ -1,10 +1,10 @@
 /* eslint-disable import/extensions */
-import Boy from '../ComponentsSvg/Boy.js';
-import Girl from '../ComponentsSvg/Girl.js';
-import Kid from '../ComponentsSvg/Kid.js';
-import Man from '../ComponentsSvg/Man.js';
-import StylishGirl from '../ComponentsSvg/StylishGirl.js';
-import TraditionalGirl from '../ComponentsSvg/TraditionalGirl.js';
+import Boy from '../ComponentsSvg/Boy.jsx';
+import Girl from '../ComponentsSvg/Girl.jsx';
+import Kid from '../ComponentsSvg/Kid.jsx';
+import Man from '../ComponentsSvg/Man.jsx';
+import StylishGirl from '../ComponentsSvg/StylishGirl.jsx';
+import TraditionalGirl from '../ComponentsSvg/TraditionalGirl.jsx';
 
 export const getImage = (index = 0) => {
   const Images = [

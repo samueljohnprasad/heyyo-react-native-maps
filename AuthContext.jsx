@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 import { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import * as secureStore from 'expo-secure-store';
 import axios from 'axios';

@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 const styler = StyleSheet.create({
@@ -85,32 +85,41 @@ function TestComp() {
     },
   ];
 
+  useEffect(() => {
+    console.log('mounting');
+
+    return () => {
+      console.log('unmounting');
+    };
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        region={{
-          latitude: 17.385,
-          longitude: 78.4867,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        }}
-      >
-        {markers.map((marker) => (
-          <Marker
-            key={marker.title}
-            coordinate={marker.coordinate}
-            title={marker.title}
-          >
-            {/* <View style={styles.marker}> */}
-            <App />
-            <Text>This is a blurred image with a text overlay.</Text>
-            {/* <Text style={styles.markerText}>{marker.title}</Text> */}
-            {/* </View> */}
-          </Marker>
-        ))}
-      </MapView>
-    </View>
+    // <View style={styles.container}>
+    //   <MapView
+    //     style={styles.map}
+    //     region={{
+    //       latitude: 17.385,
+    //       longitude: 78.4867,
+    //       latitudeDelta: 0.05,
+    //       longitudeDelta: 0.05,
+    //     }}
+    //   >
+    //     {markers.map((marker) => (
+    //       <Marker
+    //         key={marker.title}
+    //         coordinate={marker.coordinate}
+    //         title={marker.title}
+    //       >
+    //         {/* <View style={styles.marker}> */}
+    //         <App />
+    //         <Text>This is a blurred image with a text overlay.</Text>
+    //         {/* <Text style={styles.markerText}>{marker.title}</Text> */}
+    //         {/* </View> */}
+    //       </Marker>
+    //     ))}
+    //   </MapView>
+    // </View>
+    <></>
   );
 }
 

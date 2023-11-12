@@ -7,7 +7,7 @@ const useSelectedCluster = () => {
     (store) => store.postsSlice.selectedCluster,
   );
 
-  return selectedCluster !== -1 ? postsNearMe[selectedCluster] : [];
+  return selectedCluster !== -1 ? postsNearMe[selectedCluster] || [] : [];
 };
 
 export default useSelectedCluster;
