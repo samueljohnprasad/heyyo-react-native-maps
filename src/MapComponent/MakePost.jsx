@@ -1,30 +1,33 @@
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable object-curly-newline */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState } from 'react';
-import { Pressable, View, StyleSheet, Platform, Button } from 'react-native';
+import { View, StyleSheet, Button } from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import * as secureStore from 'expo-secure-store';
-import { useNavigation } from '@react-navigation/native';
-import { getImage } from '../utils/helpers';
-import { TOKEN_KEY_USER_DETAILS, useAuth } from '../../AuthContext';
+import Slider from '@react-native-community/slider';
+import { TOKEN_KEY_USER_DETAILS } from '../../AuthContext';
 import { postNewPost } from '../store/sockets';
 import SFProText from '../components/SFProText';
-import styled from '@emotion/native';
+import useGetNearByMePost from '../hooks/useGetNearByMePost';
 
 export const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: 'center',
     padding: 10,
+    display: 'flex',
+    gap: 20,
   },
   input: {
     minHeight: 100,
-    height: 200,
+    maxHeight: 200,
     width: 300,
     flexWrap: 'wrap',
-    // borderColor: "#C0C0C0",
-    // borderWidth: 1,
+    borderColor: '#C0C0C0',
+    borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
     paddingRight: 10,
@@ -35,59 +38,24 @@ export const styles = StyleSheet.create({
     width: 66,
     height: 58,
   },
-  circle: {
-    width: 42,
-    height: 42,
-    borderRadius: 100,
-    backgroundColor: '#fff',
-    padding: 2,
-    overflow: 'visible',
-    borderColor: 'blue',
-    borderWidth: 1,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'blue',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2.84,
-      },
-    }),
-  },
 });
 
-const ImageWrapper = styled.View`
-  width: 42px;
-  height: 42px;
-  border-radius: 100px;
-  background-color: '#fff';
-  padding: 3px;
-  border-color: blue;
-  border-width: 1px;
-  overflow: 'visible';
-  border-width: 1px;
-  elevation: 5;
-  /* box-shadow: 10px 5px 5px black; */
-  shadow-opacity: 0.9;
-  shadow-radius: 2.84px;
-  shadow-color: blue;
-  shadow-offset: 0px 0px;
-`;
+// 10 100// 10- 100 =-90 // 101-100= 1
 function MakePost() {
   const [inputValue, setInputValue] = useState('');
-  const { userDetails } = useAuth();
   const dispatch = useDispatch();
-  const { navigate } = useNavigation();
-  const [maxDistance, setMaxDistance] = React.useState('');
+  const getNearByMePosts = useGetNearByMePost();
+
+  const [sliderKm, setSliderKm] = useState(10);
+  const [sliderMeters, setSliderMeters] = useState(0);
+
+  // const [maxDistance, setMaxDistance] = React.useState('');
   const latitude = useSelector(
     (store) => store.map.userCurrentLocation.latitude,
   );
   const longitude = useSelector(
     (store) => store.map.userCurrentLocation.longitude,
   );
-
-  const onPressProfile = () => {
-    navigate('Home');
-  };
 
   const onChangeText = (text) => {
     setInputValue(text);
@@ -98,14 +66,14 @@ function MakePost() {
     const { userName, userId } = JSON.parse(localData);
     const callBackFunction = () => {
       setInputValue('');
-      setMaxDistance('');
+      // setMaxDistance('');
     };
 
     const newPost = {
       callBackFunction,
       latitude,
       longitude,
-      maxDistance,
+      maxDistance: sliderKm * 1000 + sliderMeters,
       userName,
       message: inputValue.trim(),
       userId,
@@ -115,36 +83,39 @@ function MakePost() {
 
   return (
     <View style={styles.contentContainer}>
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          // borderColor: "red",
-          // borderWidth: 1,
-          width: '80%',
-        }}
-      >
-        <SFProText
-          fontFamily="SFProTextMedium"
-          style={{ fontSize: 16, fontWeight: 'bold' }}
-        >
-          {userDetails.userName}
-        </SFProText>
-        <Pressable onPress={onPressProfile}>
-          <View
-            style={[
-              styles.circle,
-              { borderColor: 'black', shadowColor: 'black' },
-            ]}
-          >
-            {getImage(userDetails.imageId)}
-          </View>
-        </Pressable>
-      </View>
+      <View style={{ width: '100%' }}>
+        <SFProText fontFamily="SFProTextMedium">{`${sliderKm}-kms`}</SFProText>
 
+        <Slider
+          onSlidingComplete={() =>
+            getNearByMePosts(sliderKm * 1000 + sliderMeters)
+          }
+          style={{ width: '100%', height: 40 }}
+          value={sliderKm}
+          minimumValue={0}
+          maximumValue={100}
+          step={1}
+          tapToSeek
+          onValueChange={(value) => setSliderKm(value)}
+          minimumTrackTintColor="blue"
+          maximumTrackTintColor="grey"
+        />
+        <SFProText fontFamily="SFProTextMedium">{`${sliderMeters}-meters`}</SFProText>
+        <Slider
+          value={sliderMeters}
+          style={{ width: '100%', height: 40 }}
+          minimumValue={0}
+          maximumValue={999}
+          step={10}
+          tapToSeek
+          onValueChange={(value) => setSliderMeters(value)}
+          minimumTrackTintColor="blue"
+          maximumTrackTintColor="grey"
+          onSlidingComplete={() =>
+            getNearByMePosts(sliderKm * 1000 + sliderMeters)
+          }
+        />
+      </View>
       <View
         style={{
           display: 'flex',
@@ -152,7 +123,7 @@ function MakePost() {
           gap: 20,
         }}
       >
-        <View>
+        {/* <View>
           <BottomSheetTextInput
             onChangeText={(value) => {
               if (/^\d*\.?\d{0,2}$/.test(value)) {
@@ -165,7 +136,7 @@ function MakePost() {
             keyboardType="numeric"
             placeholder="Enter max distance to reach in meters"
           />
-        </View>
+        </View> */}
 
         <BottomSheetTextInput
           value={inputValue}

@@ -5,13 +5,13 @@ import Toast from 'react-native-toast-message';
 import { socket } from '../network/socket';
 import { updateNewPosts } from './post.reducer';
 
-export const realTimeNewPostUpdates = () => (dispatch) => {
-  socket.on('realTimeNewPostUpdates', (data) => {
-    console.log('realTimeNewPostUpdates', data);
-    dispatch(updateNewPosts(data));
-  });
-};
-
+// export const realTimeNewPostUpdates = () => (dispatch) => {
+//   socket.on('realTimeNewPostUpdates', (data) => {
+//     console.log('realTimeNewPostUpdates', data);
+//     dispatch(updateNewPosts(data));
+//   });
+// };
+export const x = 10;
 export const postNewPost =
   ({ callBackFunction, ...newPost }) =>
   (dispatch) => {

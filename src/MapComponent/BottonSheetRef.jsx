@@ -1,17 +1,23 @@
+/* eslint-disable import/no-named-as-default */
+/* eslint-disable import/no-named-as-default-member */
+/* eslint-disable operator-linebreak */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-curly-newline */
-import React, { useCallback, useRef, useState } from 'react';
-import { View, Text, Platform, Pressable, Dimensions } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useDerivedValue } from 'react-native-reanimated';
+import { useBetween } from 'use-between';
+import { useDispatch } from 'react-redux';
 import BlurredBackground from './BlurredBackground';
-import MakePost, { styles } from './MakePost';
-import { getImage } from '../utils/helpers';
-import { useAuth } from '../../AuthContext';
+import MakePost from './MakePost';
 import Event from './Event';
-import { BlurView } from 'expo-blur';
-import { useSharedValue, useDerivedValue } from 'react-native-reanimated';
-import Weather from './Weather';
+import Weather from './TransitionWithBottomSheet';
+import useShareableState from '../hooks/useShareableState';
+import Profile from './modelScreens/Profile';
+import BottomTabs from '../components/BottomTabs';
+import { subscribeToUpdateEvents } from '../store/realTimeUpdatesThunks';
+
 // const ButtonStyled = styled.View`
 //   color: turquoise;
 //   background-color: red;
@@ -25,15 +31,13 @@ import Weather from './Weather';
 //   height: 100px;
 // `;
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-
 function BottomSheetRef() {
   const bottomSheetRef = useRef(null);
   const snapPoints = ['9%', '16%', '50%', '90%'];
   const [selectedTab, setSelectedTab] = useState(0);
-  const { userDetails } = useAuth();
-  const animatedPOIListIndex = useSharedValue(0);
-  const animatedPOIListPosition = useSharedValue(SCREEN_HEIGHT);
+  const { animatedPOIListIndex, animatedPOIListPosition } =
+    useBetween(useShareableState);
+  const dispatch = useDispatch();
 
   const weatherAnimatedIndex = useDerivedValue(
     () => animatedPOIListIndex.value,
@@ -43,13 +47,10 @@ function BottomSheetRef() {
   );
 
   const components = [
-    <MakePost />,
-    <Event />,
-    <View>
-      <Text>hi</Text>
-    </View>,
+    <MakePost key="MakePost" />,
+    <Event key="Event" />,
+    <Profile key="Profile" />,
   ];
-
   const currentSnapPointIndex = useRef(0);
 
   const handleSheetChanges = useCallback((index) => {
@@ -61,7 +62,9 @@ function BottomSheetRef() {
     if (!(currentSnapPointIndex.current === 0)) return;
     bottomSheetRef.current.snapToIndex(2);
   };
-
+  useEffect(() => {
+    subscribeToUpdateEvents()(dispatch);
+  }, []);
   return (
     <>
       <Weather
@@ -76,7 +79,7 @@ function BottomSheetRef() {
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
         keyboardBehavior="extend"
-        // backgroundStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.60)' }}
+        /// backgroundStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.60)' }}
         backgroundComponent={BlurredBackground}
         style={{
           borderWidth: 0.5,
@@ -96,85 +99,10 @@ function BottomSheetRef() {
       >
         {components[selectedTab]}
       </BottomSheet>
-      <BlurView
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          flexDirection: 'row',
-          // backgroundColor: 'white',
-          backgroundColor: 'rgba(255, 255, 255, 0.30)',
-          justifyContent: 'space-around',
-          borderWidth: 0.5,
-          borderColor: 'rgba(0, 0, 0, 0.12)',
-          height: '9%',
-        }}
-      >
-        <Pressable
-          style={{
-            paddingTop: 22,
-            paddingBottom: 22,
-            flex: 1,
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          suppressHighlighting
-          onPress={() => openBottomSheetToSnapPoint(0)}
-        >
-          <MaterialIcons
-            name="post-add"
-            size={30}
-            color={selectedTab == 0 ? 'blue' : 'black'}
-          />
-        </Pressable>
-        <Pressable
-          suppressHighlighting
-          onPress={() => openBottomSheetToSnapPoint(1)}
-          style={{
-            paddingTop: 22,
-            paddingBottom: 22,
-            flex: 1,
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <MaterialIcons
-            name="event-note"
-            size={30}
-            color={selectedTab == 1 ? 'blue' : 'black'}
-          />
-        </Pressable>
-        <Pressable
-          suppressHighlighting
-          onPress={() => openBottomSheetToSnapPoint(2)}
-          style={{
-            paddingTop: 22,
-            paddingBottom: 22,
-            flex: 1,
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <View
-            style={[
-              styles.circle,
-              selectedTab !== 2 && {
-                borderColor: 'black',
-                shadowColor: 'black',
-              },
-            ]}
-          >
-            {getImage(userDetails.imageId)}
-          </View>
-        </Pressable>
-      </BlurView>
+      <BottomTabs
+        openBottomSheetToSnapPoint={openBottomSheetToSnapPoint}
+        selectedTab={selectedTab}
+      />
     </>
   );
 }

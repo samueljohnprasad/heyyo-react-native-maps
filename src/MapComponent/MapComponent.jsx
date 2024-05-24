@@ -1,36 +1,21 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable implicit-arrow-linebreak */
 import { useEffect, useRef, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  Dimensions,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Octicons,
-} from '@expo/vector-icons';
-import { getDistance } from 'geolib';
+import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
-import TimeAgo from 'react-native-timeago';
 import { getImage } from '../utils/helpers';
-import { getNearByMePost } from '../store/thunk';
 import usePostNearByme from '../hooks/usePostNearByme';
 import ClusteredMapView from './ClusteredMapView/ClusteredMapView';
-import useSelectedCluster from '../hooks/useSelectedCluster';
 import { updateSelectedCluster } from '../store/post.reducer';
 import { IntersectingCircles } from '../components/Circle';
 import Compass from '../ComponentsSvg/Compass';
+import useGetNearByMePost from '../hooks/useGetNearByMePost';
 
 const styles = StyleSheet.create({
   container: {
@@ -114,17 +99,13 @@ const styles = StyleSheet.create({
 export default function MapComponent({ latitude, longitude, activeUsers }) {
   const dispatch = useDispatch();
   const mapRef = useRef(null);
-  const { height } = Dimensions.get('window');
-  const CARD_HEIGHT = height / 4;
-  const CARD_WIDTH = CARD_HEIGHT - 50;
   const [showActiveUsers, setShowActiveUsers] = useState(false);
-
+  const getNearByMePosts = useGetNearByMePost();
   const { navigate } = useNavigation();
-  // const [sliderPosts, setSliderPosts] = useState([]);
-  const sliderPosts = useSelectedCluster();
   const postNearByme = usePostNearByme();
   useEffect(() => {
-    dispatch(getNearByMePost({ latitude, longitude }));
+    getNearByMePosts();
+    // dispatch(getNearByMePost({ latitude, longitude, distance: 10000 }));
     const region = {
       latitude: latitude || 51.5072,
       longitude: longitude || 0.1276,
@@ -134,11 +115,6 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
     mapRef.current.animateToRegion(region, 1 * 1000);
   }, [latitude, longitude]);
 
-  const onPressSliderPostsBack = () => {
-    // setSliderPosts([]);
-    dispatch(updateSelectedCluster({ selectedCluster: -1 }));
-  };
-
   const onMapPostClick = (selectedCluster, cluster) => {
     if (cluster.length === 1) {
       navigate('PostOverViewModal', { cluster: cluster[0] });
@@ -147,16 +123,6 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
     // setSliderPosts(cluster);
     dispatch(updateSelectedCluster({ selectedCluster }));
   };
-
-  const onPressSliderCard = (post) => {
-    navigate('PostOverViewModal', { cluster: post });
-  };
-
-  const getDistanceHandler = (postLatitude, postLongitude) =>
-    getDistance(
-      { latitude, longitude },
-      { latitude: postLatitude, longitude: postLongitude },
-    );
 
   const animateToRegion = () => {
     const region = {
@@ -168,7 +134,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
 
     mapRef.current.animateToRegion(region, 2000);
   };
-  console.log('activeUsers>>>>>>>>>>>>>', activeUsers);
+
   return (
     <View style={styles.container}>
       <ClusteredMapView
@@ -207,6 +173,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
                 longitude: map.coordinates[0],
               }}
               title={map.userName || 'activeUser'}
+              description="1"
             >
               <TouchableOpacity activeOpacity={0.7}>
                 <View style={{ width: 40, height: 40 }}>
@@ -218,6 +185,8 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
         {!showActiveUsers &&
           postNearByme.map((cluster, index) => (
             <Marker
+              photosLength={cluster?.length}
+              photo={cluster?.length ? cluster?.[0]?.user?.imageId : 0}
               key={index}
               tracksViewChanges
               coordinate={{
@@ -251,112 +220,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
             </Marker>
           ))}
       </ClusteredMapView>
-      {!!sliderPosts.length && (
-        <Animated.ScrollView
-          horizontal
-          pagingEnabled
-          scrollEventThrottle={1}
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_WIDTH}
-          style={styles.scrollView}
-        >
-          <View
-            style={{
-              flexDirection: 'column',
-              gap: 10,
-              marginHorizontal: 10,
-            }}
-          >
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={onPressSliderPostsBack}
-            >
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Ionicons name="ios-close" size={24} color="black" />
-              </View>
-            </TouchableOpacity>
-            <View style={{ flexDirection: 'row' }}>
-              {sliderPosts.map((post, index) => (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  key={index}
-                  onPress={() => onPressSliderCard(post)}
-                >
-                  <View style={styles.card}>
-                    <View
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        gap: 15,
-                      }}
-                    >
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'flex-start',
-                          alignItems: 'center',
-                          gap: 5,
-                        }}
-                      >
-                        <View style={{ width: 30, height: 30 }}>
-                          {getImage(post.user.imageId)}
-                        </View>
-                        <Text
-                          style={{
-                            color: '#262528',
-                            fontWeight: 600,
-                            fontSize: 14,
-                          }}
-                        >
-                          {post.user.userName}
-                        </Text>
-                      </View>
-                      <View style={{ flexDirection: 'column', gap: 5 }}>
-                        <View style={{ maxHeight: 90 }}>
-                          <Text numberOfLines={5}>{post.message}</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', gap: 10 }}>
-                          <TimeAgo time={post.createAt} />
-                          <Text>
-                            {`${getDistanceHandler(
-                              post.location.coordinates[1],
-                              post.location.coordinates[0],
-                            )}m away`}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        justifyContent: 'flex-end',
-                        alignItems: 'flex-end',
-                      }}
-                    >
-                      <MaterialIcons
-                        name="keyboard-arrow-right"
-                        size={24}
-                        color="black"
-                      />
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        </Animated.ScrollView>
-      )}
+      {/* <PostsSlider /> */}
       <View
         style={{
           position: 'absolute',

@@ -1,10 +1,13 @@
+import { useSharedValue } from 'react-native-reanimated';
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+import { Dimensions } from 'react-native';
+
 const useShareableState = () => {
-  const [username, setUsername] = useState('Abrar');
-  const [count, setCount] = useState(0);
+  const animatedPOIListIndex = useSharedValue(0);
+  const animatedPOIListPosition = useSharedValue(SCREEN_HEIGHT);
   return {
-    username,
-    setUsername,
-    count,
-    setCount,
+    animatedPOIListIndex,
+    animatedPOIListPosition,
   };
 };
+export default useShareableState;

@@ -19,7 +19,7 @@ import React, {
   useState,
 } from 'react';
 import { Dimensions, LayoutAnimation, Platform } from 'react-native';
-import MapView, { Polyline } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import SuperCluster from 'supercluster';
 
 import ClusterMarker from './ClusteredMarker';
@@ -61,12 +61,15 @@ const ClusteredMapView = forwardRef(
     ref,
   ) => {
     const [markers, updateMarkers] = useState([]);
-    const [spiderMarkers, updateSpiderMarker] = useState([]);
-    const [otherChildren, updateChildren] = useState([]);
+    const rawData = [];
+
+    // const [spiderMarkers, updateSpiderMarker] = useState([]);
+    // const [otherChildren, updateChildren] = useState([]);
     const [superCluster, setSuperCluster] = useState(null);
     const [currentRegion, updateRegion] = useState(
       restProps.region || restProps.initialRegion,
     );
+    const [photos, setPhotos] = useState([]);
 
     const [isSpiderfier, updateSpiderfier] = useState(false);
     const [clusterChildren, updateClusterChildren] = useState(null);
@@ -78,20 +81,21 @@ const ClusteredMapView = forwardRef(
     );
 
     useEffect(() => {
-      const rawData = [];
       const newOtherChildren = [];
 
       if (!clusteringEnabled) {
-        updateSpiderMarker([]);
+        // updateSpiderMarker([]);
         updateMarkers([]);
-        updateChildren(propsChildren);
+        // updateChildren(propsChildren);
         setSuperCluster(null);
         return;
       }
 
       propsChildren.forEach((child, index) => {
         if (isMarker(child)) {
-          rawData.push(markerToGeoJSONFeature(child, index));
+          const markerToGeo = markerToGeoJSONFeature(child, index);
+          rawData.push(markerToGeo);
+          // photos.current.push(markerToGeo.properties.photo);
         } else {
           newOtherChildren.push(child);
         }
@@ -104,16 +108,31 @@ const ClusteredMapView = forwardRef(
         minPoints,
         extent,
         nodeSize,
+        initial: (index, props) => ({
+          count: props.photosLength || 0, // Initialize count for individual points
+        }),
+        reduce: (accumulated, props) => {
+          accumulated.photosLength = accumulated.photosLength
+            ? accumulated.photosLength + props.photosLength || 0
+            : props.photosLength; // Sum counts for clusters
+        },
       });
 
       superCluster.load(rawData);
+      // console.log('rawData', {
+      //   rawData: JSON.stringify(rawData),
+      //   imageid: rawData?.[0]?.properties.photo,
+      //   rawDataLength: rawData.length,
+      // });
+      setPhotos(rawData.map((marker) => marker.properties.photo));
 
       const bBox = calculateBBox(currentRegion);
       const zoom = returnMapZoom(currentRegion, bBox, minZoom);
       const newMarkers = superCluster.getClusters(bBox, zoom);
 
       updateMarkers(newMarkers);
-      updateChildren(newOtherChildren);
+
+      // updateChildren(newOtherChildren);
       setSuperCluster(superCluster);
 
       superClusterRef.current = superCluster;
@@ -138,9 +157,9 @@ const ClusteredMapView = forwardRef(
           allSpiderMarkers.push(...positions);
         });
 
-        updateSpiderMarker(allSpiderMarkers);
+        // updateSpiderMarker(allSpiderMarkers);
       } else {
-        updateSpiderMarker([]);
+        // updateSpiderMarker([]);
       }
     }, [isSpiderfier, markers]);
 
@@ -204,20 +223,24 @@ const ClusteredMapView = forwardRef(
         }}
         onRegionChangeComplete={_onRegionChangeComplete}
       >
-        {markers.map((marker) =>
+        {markers.map((marker, index) =>
           marker.properties.point_count === 0 ? (
             propsChildren[marker.properties.index]
           ) : !isSpiderfier ? (
             renderCluster ? (
-              renderCluster({
+              {
+                /* renderCluster({
                 onPress: _onClusterPress(marker),
                 clusterColor,
                 clusterTextColor,
                 clusterFontFamily,
                 ...marker,
-              })
+              }) */
+              }
             ) : (
               <ClusterMarker
+                photo={photos[index]}
+                marker={marker}
                 key={`cluster-${marker.id}`}
                 {...marker}
                 onPress={_onClusterPress(marker)}
@@ -234,8 +257,8 @@ const ClusteredMapView = forwardRef(
           ) : null,
         )}
 
-        {otherChildren}
-        <>
+        {/* {otherChildren} */}
+        {/* <>
           {spiderMarkers.map((marker) =>
             propsChildren[marker.index]
               ? React.cloneElement(propsChildren[marker.index], {
@@ -243,15 +266,15 @@ const ClusteredMapView = forwardRef(
                 })
               : null,
           )}
-        </>
-        {spiderMarkers.map((marker, index) => (
+        </> */}
+        {/* {spiderMarkers.map((marker, index) => (
           <Polyline
             key={index}
             coordinates={[marker.centerPoint, marker, marker.centerPoint]}
             strokeColor={spiderLineColor}
             strokeWidth={1}
           />
-        ))}
+        ))} */}
       </MapView>
     );
   },
@@ -264,8 +287,8 @@ ClusteredMapView.defaultProps = {
   preserveClusterPressBehavior: false,
   layoutAnimationConf: LayoutAnimation.Presets.spring,
   tracksViewChanges: false,
-  // SuperCluster parameters
-  radius: Dimensions.get('window').width * 0.25,
+  // SuperCluster parameters //to change cluster distance
+  radius: Dimensions.get('window').width * 0.005,
   maxZoom: 20,
   minZoom: 1,
   minPoints: 2,
@@ -290,4 +313,5 @@ ClusteredMapView.defaultProps = {
   mapRef: () => {},
 };
 
+ClusteredMapView.displayName = 'ClusteredMapView';
 export default memo(ClusteredMapView);

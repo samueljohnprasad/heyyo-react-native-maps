@@ -26,12 +26,13 @@ export const postTheMessage = createAsyncThunk(
 
 export const getNearByMePost = createAsyncThunk(
   'posts/getNearByMePost',
-  async ({ latitude, longitude }, { rejectWithValue }) => {
+  async ({ latitude, longitude, distance }, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${getBaseUrl()}/nearby`, {
         params: {
           latitude,
           longitude,
+          distance: parseInt(distance, 10),
         },
       });
       return response.data;

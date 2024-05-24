@@ -6,6 +6,7 @@ import { Marker } from 'react-native-maps';
 
 import { returnMarkerStyle } from './helpers';
 import { getColorForRange } from './helper';
+import { getImage } from '../../utils/helpers';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,6 +28,19 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: 'bold',
   },
+  textWrapper: {
+    position: 'absolute',
+    top: -15,
+    right: -15,
+    padding: 4,
+    backgroundColor: 'grey',
+    borderRadius: '50%',
+    height: 25,
+
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 function ClusteredMarker({
@@ -37,10 +51,12 @@ function ClusteredMarker({
   clusterTextColor,
   clusterFontFamily,
   tracksViewChanges,
+  photo,
 }) {
   const points = properties.point_count;
-  const { width, height, fontSize, size } = returnMarkerStyle(points);
-
+  const { photosLength } = properties;
+  const { width, height, size } = returnMarkerStyle(points);
+  // console.log('photophoto', { photo });
   return (
     <Marker
       key={`${geometry.coordinates[0]}_${geometry.coordinates[1]}`}
@@ -78,18 +94,21 @@ function ClusteredMarker({
             },
           ]}
         >
-          <Text
-            style={[
-              styles.text,
-              {
-                color: clusterTextColor,
-                fontSize,
-                fontFamily: clusterFontFamily,
-              },
-            ]}
-          >
-            {points}
-          </Text>
+          {getImage(photo)}
+
+          <View style={[styles.textWrapper]}>
+            <Text
+              style={[
+                styles.text,
+                {
+                  color: clusterTextColor,
+                  fontFamily: clusterFontFamily,
+                },
+              ]}
+            >
+              {photosLength}
+            </Text>
+          </View>
         </View>
       </TouchableOpacity>
     </Marker>

@@ -115,7 +115,6 @@ export default function PostOverViewModal({ route }) {
 
   useEffect(() => {
     socket.on('newComment', (comment) => {
-      console.log('newComment', comment);
       setComments((prevComments) => [comment, ...prevComments]);
     });
   }, []);
@@ -139,11 +138,7 @@ export default function PostOverViewModal({ route }) {
   const addCommentHandler = async (comment) => {
     const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
     const { userId } = JSON.parse(localData);
-    console.log('>>>>>>>>>>>', {
-      userId,
-      postId: route.params.cluster._id,
-      comment,
-    });
+
     try {
       socket.emit('postComment', {
         postId: route.params.cluster._id,
@@ -158,7 +153,6 @@ export default function PostOverViewModal({ route }) {
     }
   };
 
-  console.log('>>>>>>', { comments });
   return (
     <KeyboardAvoidingView
       keyboardVerticalOffset={50}

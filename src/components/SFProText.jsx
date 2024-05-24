@@ -3,7 +3,9 @@ import { Text, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   text: {
-    fontFamily: 'SFProTextRegular',
+    fontFamily: 'SFProTextMedium',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 function SFProText({ children, style, fontFamily }) {

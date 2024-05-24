@@ -8,13 +8,13 @@ import TraditionalGirl from '../ComponentsSvg/TraditionalGirl.jsx';
 
 export const getImage = (index = 0) => {
   const Images = [
-    <Boy />,
-    <Girl />,
-    <Kid />,
-    <Man />,
-    <StylishGirl />,
-    <TraditionalGirl />,
-    <Man />,
+    <Boy key="231" />,
+    <Girl key="23d1" />,
+    <Kid key="2ds31" />,
+    <Man key="2df31" />,
+    <StylishGirl key="sw231" />,
+    <TraditionalGirl key="2e31" />,
+    <Man key="2ee31" />,
   ];
   return Images[index] || Images[0];
 };

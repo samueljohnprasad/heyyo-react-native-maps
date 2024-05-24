@@ -2,8 +2,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
-import { Platform, View } from 'react-native';
-import Device from 'expo-device';
+import { View } from 'react-native';
 import * as Location from 'expo-location';
 import { useDispatch, useSelector } from 'react-redux';
 import * as secureStore from 'expo-secure-store';
@@ -73,6 +72,7 @@ export default function UserLocation() {
         imageId,
       });
       socket.on('nearbyUsers', (data) => {
+        // console.log('nearbyUsers');
         setActiveUsers((prev) => [...prev, ...data]);
       });
       dispatch(
@@ -81,6 +81,14 @@ export default function UserLocation() {
           longitude: location.coords.longitude,
         }),
       );
+      setTimeout(() => {
+        dispatch(
+          updateUserCurrentLocationAction({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          }),
+        );
+      }, 30000);
     })();
   }, []);
 
