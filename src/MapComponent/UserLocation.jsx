@@ -116,7 +116,7 @@ export default function UserLocation() {
 
   useEffect(() => {
     if (userId) {
-      socket.query = { driverId: userId };
+      socket.auth = { token: 'token', userId };
       socket.connect();
     }
   }, [userId]);

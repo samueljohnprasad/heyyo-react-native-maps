@@ -7,7 +7,10 @@ export const postTheMessage = createAsyncThunk(
   'posts/postTheMessage',
   async ({ callBackFunction, ...postDetails }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${getBaseUrl()}/post`, postDetails);
+      const response = await axios.post(
+        `${getBaseUrl()}/posts/post`,
+        postDetails,
+      );
 
       if (response.status === 201) {
         callBackFunction();
@@ -28,7 +31,7 @@ export const getNearByMePost = createAsyncThunk(
   'posts/getNearByMePost',
   async ({ latitude, longitude, distance }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${getBaseUrl()}/nearby`, {
+      const response = await axios.get(`${getBaseUrl()}/locations/nearby`, {
         params: {
           latitude,
           longitude,

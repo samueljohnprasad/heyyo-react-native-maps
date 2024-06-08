@@ -1,10 +1,12 @@
 /* eslint-disable import/extensions */
+import * as secureStore from 'expo-secure-store';
 import Boy from '../ComponentsSvg/Boy.jsx';
 import Girl from '../ComponentsSvg/Girl.jsx';
 import Kid from '../ComponentsSvg/Kid.jsx';
 import Man from '../ComponentsSvg/Man.jsx';
 import StylishGirl from '../ComponentsSvg/StylishGirl.jsx';
 import TraditionalGirl from '../ComponentsSvg/TraditionalGirl.jsx';
+import { TOKEN_KEY_USER_DETAILS } from '../../AuthContext.jsx';
 
 export const getImage = (index = 0) => {
   const Images = [
@@ -19,3 +21,11 @@ export const getImage = (index = 0) => {
   return Images[index] || Images[0];
 };
 export const x = 10;
+
+export const getUserDetailsFromLocalStorage = async () => {
+  const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
+  if (!localData) {
+    throw new Error('User details not found in local storage');
+  }
+  return localData;
+};

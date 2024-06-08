@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
   const guestLogin = async () => {
     try {
       setIsAuthLoading(true);
-      const guestUrl = `${getBaseUrl()}/guest-login`;
+      const guestUrl = `${getBaseUrl()}/users/guest-login`;
 
       const result = await axios.post(guestUrl);
 

@@ -129,7 +129,7 @@ function PostsSlider() {
                     }}
                   >
                     <View style={{ width: 30, height: 30 }}>
-                      {getImage(post.user.imageId)}
+                      {getImage(post.user?.imageId || 0)}
                     </View>
                     <Text
                       style={{
@@ -138,7 +138,7 @@ function PostsSlider() {
                         fontSize: 14,
                       }}
                     >
-                      {post.user.userName}
+                      {post.user?.userName || ''}
                     </Text>
                   </View>
                   <View style={{ flexDirection: 'column', gap: 5 }}>
