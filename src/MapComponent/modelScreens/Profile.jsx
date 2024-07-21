@@ -8,12 +8,7 @@ import SFProText from '../../components/SFProText';
 import { getImage } from '../../utils/helpers';
 import { useAuth } from '../../../AuthContext';
 
-const data = [
-  { title: 'Item 1' },
-  { title: 'Item 2' },
-  { title: 'Item 3' },
-  // Add more data as needed
-];
+const data = [{ title: 'Item 1' }, { title: 'Item 2' }, { title: 'Item 3' }];
 export const ProfileStyles = StyleSheet.create({
   circle: {
     width: 42,

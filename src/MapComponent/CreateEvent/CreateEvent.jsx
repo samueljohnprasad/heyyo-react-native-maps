@@ -157,163 +157,164 @@ function CreateEvent() {
   const [options, setOptions] = useState(['Yes', 'No', '']);
 
   return (
-    // <View
-    //   className="flex flex-col bg-white items-center justify-start pt-4 flex-1 px-4"
-    //   style={{ gap: 30 }}
-    // >
-    //   <View
-    //     className="flex flex-col w-full rounded-lg p-4 border border-gray-300 "
-    //     style={{
-    //       backgroundColor: '#f8fafb',
-    //       borderColor: '#eef0f4',
-    //       borderWidth: 1,
-    //       gap: 10,
-    //     }}
-    //   >
-    //     <View className="flex flex-row gap-2">
-    //       <Pressable
-    //         className="flex gap-1 flex-1 flex-row justify-start items-center px-4 bg-white rounded-lg py-3"
-    //         onPress={() => handleDateChange('startOpen', true)}
-    //       >
-    //         <ClockIcon />
-    //         <Text>{getTime(state.startTime)}</Text>
-    //       </Pressable>
-    //       <View
-    //         style={{
-    //           width: 30,
-    //           display: 'flex',
-    //           justifyContent: 'center',
-    //           alignItems: 'center',
-    //         }}
-    //       >
-    //         <ArrowLongRightIcon />
-    //       </View>
-    //       <Pressable
-    //         className="flex gap-1 flex-1 flex-row justify-start items-center px-4 bg-white rounded-lg py-3"
-    //         onPress={() => handleDateChange('endOpen', true)}
-    //       >
-    //         <ClockIcon />
-    //         <Text>{getTime(state.endTime)}</Text>
-    //       </Pressable>
-    //     </View>
-    //     <Pressable
-    //       style={{
-    //         display: 'flex',
-    //         justifyContent: 'center',
-    //         alignItems: 'center',
-    //         backgroundColor: '#ffffff',
-    //         paddingVertical: 10,
-    //         borderRadius: 8,
-    //       }}
-    //       onPress={() => handleDateChange('dateOpen', true)}
-    //     >
-    //       <View className="flex flex-row w-full justify-start gap-2 items-center px-3">
-    //         <CalendarDaysIcon />
-    //         <Text className="text-lg font-medium">
-    //           {dayjs(state.selectedDate).format('dddd, MMMM D')}
-    //         </Text>
-    //       </View>
-    //     </Pressable>
-    //   </View>
-    //   <View
-    //     className="flex flex-col w-full rounded-lg p-4 border border-gray-300 "
-    //     style={{
-    //       backgroundColor: '#f8fafb',
-    //       borderColor: '#eef0f4',
-    //       borderWidth: 1,
-    //       gap: 10,
-    //     }}
-    //   >
-    //     <View className="flex flex-row gap-2 justify-start items-center">
-    //       <Text>need approval</Text>
-    //       <Switch
-    //         trackColor={{ false: '#767577', true: '#81b0ff' }}
-    //         thumbColor={state.isEnabled ? '#f5dd4b' : '#f4f3f4'}
-    //         ios_backgroundColor="#3e3e3e"
-    //         onValueChange={toggleSwitch}
-    //         value={state.isEnabled}
-    //       />
-    //     </View>
-    //     <View>
-    //       <SFProText fontFamily="SFProTextMedium">{`${state.sliderKm}-kms`}</SFProText>
-    //       <Slider
-    //         style={{ width: '100%', height: 40 }}
-    //         value={state.sliderKm}
-    //         minimumValue={0}
-    //         maximumValue={100}
-    //         step={1}
-    //         tapToSeek
-    //         onValueChange={(value) => handleDateChange('sliderKm', value)}
-    //         minimumTrackTintColor="blue"
-    //         maximumTrackTintColor="grey"
-    //       />
-    //     </View>
-    //   </View>
-    //   <View
-    //     className="flex flex-col w-full rounded-lg p-4 border border-gray-300 "
-    //     style={{
-    //       backgroundColor: '#f8fafb',
-    //       borderColor: '#eef0f4',
-    //       borderWidth: 1,
-    //       gap: 10,
-    //     }}
-    //   >
-    //     <FormComponent handleDateChange={handleDateChange} state={state} />
-    //   </View>
-    //   <DatePicker
-    //     modal
-    //     minimumDate={new Date()}
-    //     mode="time"
-    //     open={state.startOpen}
-    //     date={state.startTime}
-    //     onConfirm={(date) => {
-    //       handleDateChange('startOpen', false);
-    //       handleDateChange('startTime', date);
-    //     }}
-    //     onCancel={() => {
-    //       handleDateChange('startOpen', false);
-    //     }}
-    //   />
-    //   <DatePicker
-    //     modal
-    //     minimumDate={state.startTime}
-    //     mode="time"
-    //     open={state.endOpen}
-    //     date={state.endTime}
-    //     onConfirm={(date) => {
-    //       handleDateChange('endOpen', false);
-    //       handleDateChange('endTime', date);
-    //     }}
-    //     onCancel={() => {
-    //       handleDateChange('endOpen', false);
-    //     }}
-    //   />
-    //   <DatePicker
-    //     modal
-    //     minimumDate={new Date()}
-    //     mode="date"
-    //     open={state.dateOpen}
-    //     date={state.selectedDate}
-    //     onConfirm={(date) => {
-    //       handleDateChange('dateOpen', false);
-    //       handleDateChange('selectedDate', date);
-    //     }}
-    //     onCancel={() => {
-    //       handleDateChange('dateOpen', false);
-    //     }}
-    //   />
-    // </View>
-    <>
-      <EventView event={sampleEvent} />
-      <View className="flex justify-center items-center">
-        <PollComponent
-          question="Do you like this poll feature?"
-          options={options}
-          setOptions={setOptions}
-        />
+    <View
+      className="flex flex-col bg-white items-center justify-start pt-4 flex-1 px-4"
+      style={{ gap: 30 }}
+    >
+      <View
+        className="flex flex-col w-full rounded-lg p-4 border border-gray-300 "
+        style={{
+          backgroundColor: '#f8fafb',
+          borderColor: '#eef0f4',
+          borderWidth: 1,
+          gap: 10,
+        }}
+      >
+        <View className="flex flex-row gap-2">
+          <Pressable
+            className="flex gap-1 flex-1 flex-row justify-start items-center px-4 bg-white rounded-lg py-3"
+            onPress={() => handleDateChange('startOpen', true)}
+          >
+            <ClockIcon />
+            <Text>{getTime(state.startTime)}</Text>
+          </Pressable>
+          <View
+            style={{
+              width: 30,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <ArrowLongRightIcon />
+          </View>
+          <Pressable
+            className="flex gap-1 flex-1 flex-row justify-start items-center px-4 bg-white rounded-lg py-3"
+            onPress={() => handleDateChange('endOpen', true)}
+          >
+            <ClockIcon />
+            <Text>{getTime(state.endTime)}</Text>
+          </Pressable>
+        </View>
+        <Pressable
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            paddingVertical: 10,
+            borderRadius: 8,
+          }}
+          onPress={() => handleDateChange('dateOpen', true)}
+        >
+          <View className="flex flex-row w-full justify-start gap-2 items-center px-3">
+            <CalendarDaysIcon />
+            <Text className="text-lg font-medium">
+              {dayjs(state.selectedDate).format('dddd, MMMM D')}
+            </Text>
+          </View>
+        </Pressable>
       </View>
-    </>
+      <View
+        className="flex flex-col w-full rounded-lg p-4 border border-gray-300 "
+        style={{
+          backgroundColor: '#f8fafb',
+          borderColor: '#eef0f4',
+          borderWidth: 1,
+          gap: 10,
+        }}
+      >
+        <View className="flex flex-row gap-2 justify-start items-center">
+          <Text>need approval</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            thumbColor={state.isEnabled ? '#f5dd4b' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={state.isEnabled}
+          />
+        </View>
+        <View>
+          <SFProText fontFamily="SFProTextMedium">{`${state.sliderKm}-kms`}</SFProText>
+          <Slider
+            style={{ width: '100%', height: 40 }}
+            value={state.sliderKm}
+            minimumValue={0}
+            maximumValue={100}
+            step={1}
+            tapToSeek
+            onValueChange={(value) => handleDateChange('sliderKm', value)}
+            minimumTrackTintColor="blue"
+            maximumTrackTintColor="grey"
+          />
+        </View>
+      </View>
+      <View
+        className="flex flex-col w-full rounded-lg p-4 border border-gray-300 "
+        style={{
+          backgroundColor: '#f8fafb',
+          borderColor: '#eef0f4',
+          borderWidth: 1,
+          gap: 10,
+        }}
+      >
+        <FormComponent handleDateChange={handleDateChange} state={state} />
+      </View>
+      <DatePicker
+        modal
+        minimumDate={new Date()}
+        mode="time"
+        open={state.startOpen}
+        date={state.startTime}
+        onConfirm={(date) => {
+          handleDateChange('startOpen', false);
+          handleDateChange('startTime', date);
+        }}
+        onCancel={() => {
+          handleDateChange('startOpen', false);
+        }}
+      />
+      <DatePicker
+        modal
+        minimumDate={state.startTime}
+        mode="time"
+        open={state.endOpen}
+        date={state.endTime}
+        onConfirm={(date) => {
+          handleDateChange('endOpen', false);
+          handleDateChange('endTime', date);
+        }}
+        onCancel={() => {
+          handleDateChange('endOpen', false);
+        }}
+      />
+      <DatePicker
+        modal
+        minimumDate={new Date()}
+        mode="date"
+        open={state.dateOpen}
+        date={state.selectedDate}
+        onConfirm={(date) => {
+          handleDateChange('dateOpen', false);
+          handleDateChange('selectedDate', date);
+        }}
+        onCancel={() => {
+          handleDateChange('dateOpen', false);
+        }}
+      />
+    </View>
   );
 }
+
+// <>
+//   <EventView event={sampleEvent} />
+//   <View className="flex justify-center items-center">
+//     <PollComponent
+//       question="Do you like this poll feature?"
+//       options={options}
+//       setOptions={setOptions}
+//     />
+//   </View>
+// </>
 
 export default CreateEvent;
