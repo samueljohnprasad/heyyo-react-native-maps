@@ -4,7 +4,7 @@ import * as secureStore from 'expo-secure-store';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
-import { getBaseUrl } from './helpers';
+import { getBaseUrl } from './src/helpers';
 import { updateUserNameAndId } from './src/store/reducer';
 
 export const TOKEN_KEY_USER_DETAILS = 'sdfjksd';
@@ -25,6 +25,10 @@ export function AuthProvider({ children }) {
     userName: '',
     userId: null,
     imageId: 0,
+    coordinates: {
+      latitude: 0,
+      longitude: 0,
+    },
   });
 
   useEffect(() => {
@@ -130,6 +134,7 @@ export function AuthProvider({ children }) {
     authState,
     isAuthLoading,
     userDetails,
+    setUserDetails,
   }));
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

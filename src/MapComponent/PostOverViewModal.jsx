@@ -25,7 +25,7 @@ import * as secureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
 import ReactTimeAgo from 'react-time-ago';
 import { getImage } from '../utils/helpers';
-import { getBaseUrl } from '../../helpers';
+import { getBaseUrl } from '../helpers';
 import InputScreen from '../components/InputScreen';
 import { socket } from '../network/socket';
 import { TOKEN_KEY_USER_DETAILS } from '../../AuthContext';
