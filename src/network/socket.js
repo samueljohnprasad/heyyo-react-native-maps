@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import Toast from 'react-native-toast-message';
-import { getBaseUrlSocket } from '../../helpers';
+import { getBaseUrlSocket } from '../helpers';
 
 export const socket = io(getBaseUrlSocket(), {
   reconnectionAttempts: Infinity,
