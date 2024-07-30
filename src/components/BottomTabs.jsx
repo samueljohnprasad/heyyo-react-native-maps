@@ -18,7 +18,7 @@ function BottomTabs({ openBottomSheetToSnapPoint, selectedTab }) {
         right: 0,
         flexDirection: 'row',
         // backgroundColor: 'white',
-        // backgroundColor: 'rgba(255, 255, 255, 0.30)',
+        backgroundColor: 'rgba(255, 255, 255, 0.30)',
         justifyContent: 'space-around',
         borderWidth: 0.5,
         borderColor: 'rgba(0, 0, 0, 0.12)',

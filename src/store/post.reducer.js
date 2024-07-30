@@ -15,7 +15,6 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     updateNewPosts: (state, action) => {
-      console.log('lkikop', action.payload.post);
       const updatedClusters = addCoordinateToClusters(
         action.payload.post,
         state.postNearByme,
