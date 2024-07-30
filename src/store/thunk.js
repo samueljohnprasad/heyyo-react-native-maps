@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import { getBaseUrl } from '../helpers';
+import { getBaseUrl } from '../../helpers';
 
 export const postTheMessage = createAsyncThunk(
   'posts/postTheMessage',

@@ -93,7 +93,7 @@ function PostsSlider() {
             style={{
               width: 40,
               height: 40,
-              borderRadius: 50,
+              borderRadius: '50%',
               backgroundColor: 'white',
               justifyContent: 'center',
               alignItems: 'center',
@@ -105,7 +105,7 @@ function PostsSlider() {
         <View style={{ flexDirection: 'row' }}>
           {sliderPosts.map((post, index) => (
             <TouchableOpacity
-              // activeOpacity={0.7}
+              activeOpacity={0.7}
               key={index}
               onPress={() => onPressSliderCard(post)}
             >

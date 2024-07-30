@@ -18,14 +18,10 @@
         "NSAllowsArbitraryLoads": {
           "NSAllowsArbitraryLoads": true
         },
-        "NSAppTransportSecurity": {
-          "allowsArbitraryLoads": true
-        },
         "config": {
           "usesNonExemptEncryption": false
         }
-      },
-      "bundleIdentifier": "com.anonymous.AwesomeProject3"
+      }
     },
     "android": {
       "adaptiveIcon": {

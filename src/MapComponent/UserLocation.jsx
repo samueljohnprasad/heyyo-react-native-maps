@@ -5,13 +5,18 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import * as Location from 'expo-location';
 import { useDispatch, useSelector } from 'react-redux';
+import * as secureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
 import MapComponent from './MapComponent';
 
 import BottomSheetRef from './BottonSheetRef';
 
 import { updateUserCurrentLocationAction } from '../store/reducer';
-import { useAuth } from '../../AuthContext';
+import {
+  LOCATION_COORDS,
+  useAuth,
+  TOKEN_KEY_USER_DETAILS,
+} from '../../AuthContext';
 import { socket } from '../network/socket';
 
 // const StyledBottom = styled.View`
@@ -27,8 +32,7 @@ import { socket } from '../network/socket';
 export default function UserLocation() {
   const dispatch = useDispatch();
   const {
-    userDetails: { userId, userName, imageId },
-    setUserDetails,
+    userDetails: { userId },
   } = useAuth();
   const [activeUsers, setActiveUsers] = useState([]);
 
@@ -53,10 +57,17 @@ export default function UserLocation() {
         longitude: location.coords.longitude,
       };
 
-      setUserDetails((prev) => ({ ...prev, coordinates: localStorageCoords }));
+      await secureStore.setItemAsync(
+        LOCATION_COORDS,
+        JSON.stringify(localStorageCoords),
+      );
+
+      const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
+      const { userId: userIdLocal, userName, imageId } = JSON.parse(localData);
+
       socket.emit('update_userLocation', {
         ...localStorageCoords,
-        userId,
+        userId: userIdLocal,
         userName,
         imageId,
       });
@@ -70,6 +81,14 @@ export default function UserLocation() {
           longitude: location.coords.longitude,
         }),
       );
+      setTimeout(() => {
+        dispatch(
+          updateUserCurrentLocationAction({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          }),
+        );
+      }, 30000);
     })();
   }, []);
 

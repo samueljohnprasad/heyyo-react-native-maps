@@ -16,10 +16,7 @@ import Weather from './TransitionWithBottomSheet';
 import useShareableState from '../hooks/useShareableState';
 import Profile from './modelScreens/Profile';
 import BottomTabs from '../components/BottomTabs';
-import {
-  subscribeToEventUpdate,
-  subscribeToUpdateEvents,
-} from '../store/realTimeUpdatesThunks';
+import { subscribeToUpdateEvents } from '../store/realTimeUpdatesThunks';
 
 // const ButtonStyled = styled.View`
 //   color: turquoise;
@@ -67,10 +64,6 @@ function BottomSheetRef() {
   };
   useEffect(() => {
     subscribeToUpdateEvents()(dispatch);
-  }, []);
-
-  useEffect(() => {
-    subscribeToEventUpdate()(dispatch);
   }, []);
   return (
     <>
