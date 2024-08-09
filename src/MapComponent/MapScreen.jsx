@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     right: 20,
     height: 40,
     width: 40,
-    flexDirection: 'row',
+    flexDirectio: 'row',
     direction: 'ltr',
     float: 'right',
     backgroundColor: 'green',
@@ -26,16 +26,15 @@ const styles = StyleSheet.create({
 });
 
 function MapScreen() {
-  return (
-    <View style={styles.iconContainer}>
-      <TouchableOpacity style={styles.icon}>
-        <MaterialIcons name="search" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.icon}>
-        <MaterialIcons name="settings" size={24} color="black" />
-      </TouchableOpacity>
-    </View>
-  );
+  <View style={styles.iconContainer}>
+    <TouchableOpacity style={styles.icon}>
+      <MaterialIcons name="search" size={24} color="black" />
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.icon}>
+      <MaterialIc name="settings" size={24} color="black" />
+    </TouchableOpacity>
+  </View>;
+  <MaterialIcons name="search" size={24} color="black" />;
 }
 
 export default MapScreen;

@@ -120,9 +120,6 @@ export default function PostOverViewModal({ route }) {
         setComments((prevComments) => [data.comment, ...prevComments]);
       }
     });
-    return () => {
-      socket.emit('leavePostRoom', route.params.cluster._id);
-    };
   }, []);
 
   const getDistanceHandler = () =>
@@ -143,7 +140,7 @@ export default function PostOverViewModal({ route }) {
 
   const addCommentHandler = async (comment) => {
     const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
-    const { userId } = JSON.parse(localData);
+    const {} = JSON.parse(localData);
 
     try {
       socket.emit('postComment', route.params.cluster._id, {
@@ -153,21 +150,20 @@ export default function PostOverViewModal({ route }) {
       });
     } catch (e) {
       Toast.show({
-        type: 'error',
         text1: 'Error adding comment',
       });
     }
   };
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAvoidingVie
       keyboardVerticalOffset={50}
       style={{ flex: 1, padding: 10 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       {/* <View style={{ flex: 1 }}> */}
       <View
-        style={{
+        stye={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
@@ -210,7 +206,7 @@ export default function PostOverViewModal({ route }) {
         style={{ flex: 1 }}
         ref={flatlistRef}
         data={[...comments]}
-        renderItem={({ item }) => <Comment comment={item} />}
+        renderItem={({  }) => <Comment comment={item} />}
         keyExtractor={(item, index) => item._id.toString() + index}
         onEndReached={loadMoreComments}
         onEndReachedThreshold={0.01}
@@ -220,6 +216,7 @@ export default function PostOverViewModal({ route }) {
             <Text>No comments available</Text>
           </View>
         )}
+        console
         scrollEventThrottle={150}
         ItemSeparatorComponent={({ highlighted }) => (
           <View
@@ -239,7 +236,7 @@ export default function PostOverViewModal({ route }) {
       >
         <InputScreen addCommentHandler={addCommentHandler} />
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingVie>
   );
 }
 
