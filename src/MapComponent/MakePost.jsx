@@ -80,11 +80,14 @@ function MakePost() {
     };
     dispatch(postNewPost(newPost));
   };
+  console.log('sliderKm', sliderKm);
+  var x;
 
   return (
     <View style={styles.contentContainer}>
       <View style={{ width: '100%' }}>
         <SFProText fontFamily="SFProTextMedium">{`${sliderKm}-kms`}</SFProText>
+
 
         <Slider
           onSlidingComplete={() =>
