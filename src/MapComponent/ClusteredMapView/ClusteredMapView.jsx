@@ -19,7 +19,7 @@ import React, {
   useState,
 } from 'react';
 import { Dimensions, LayoutAnimation, Platform } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Circle } from 'react-native-maps';
 import SuperCluster from 'supercluster';
 
 import ClusterMarker from './ClusteredMarker';
@@ -256,6 +256,15 @@ const ClusteredMapView = forwardRef(
             )
           ) : null,
         )}
+        <Circle
+          center={{
+            latitude: 17.407161,
+            longitude: 78.348113,
+          }}
+          radius={5000}
+          strokeColor="rgba(255, 0, 0, 0.5)"
+          // fillColor="rgba(255, 0, 0, 0.2)"
+        />
 
         {/* {otherChildren} */}
         {/* <>
@@ -288,7 +297,7 @@ ClusteredMapView.defaultProps = {
   layoutAnimationConf: LayoutAnimation.Presets.spring,
   tracksViewChanges: false,
   // SuperCluster parameters //to change cluster distance
-  radius: Dimensions.get('window').width * 0.005,
+  radius: Dimensions.get('window').width * 0.1,
   maxZoom: 20,
   minZoom: 1,
   minPoints: 2,

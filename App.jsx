@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable global-require */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -9,6 +10,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import { useFonts } from 'expo-font';
+import { Button } from 'react-native';
 import UserLocation from './src/MapComponent/UserLocation';
 import LoginPage from './src/MapComponent/LoginPage';
 import { store } from './src/store/index';
@@ -16,7 +18,10 @@ import { useAuth, AuthProvider } from './AuthContext';
 import UserProfile from './src/MapComponent/UserProfile';
 import PostOverViewModal from './src/MapComponent/PostOverViewModal';
 import PageOverLay from './src/MapComponent/PageOverLay';
-import CreateEvent from './src/MapComponent/CreateEvent';
+import CreateEvent from './src/MapComponent/CreateEvent/CreateEvent';
+import ProfileImageChange from './src/screens/ProfileImageChange/ProfileImageChange';
+import HeaderRightComp from './src/screens/ProfileImageChange/HeaderRightComp';
+import CreateEventHeaderRightComp from './src/MapComponent/CreateEvent/CreateEventHeaderRightComp';
 
 TimeAgo.addLocale(en);
 
@@ -29,6 +34,7 @@ export function Layout() {
     SFProTextRegular: require('./assets/fonts/SF-Pro-Text-Regular.ttf'),
     SFProTextMedium: require('./assets/fonts/SF-Pro-Text-Medium.ttf'),
   });
+
   if (!fontsLoaded) return null;
   return (
     <PageOverLay isLoading={isAuthLoading || isLoading}>
@@ -62,12 +68,46 @@ export function Layout() {
                 component={PostOverViewModal}
               />
               <Stack.Screen
-                options={{
+                options={({ navigation }) => ({
                   presentation: 'modal',
+                  headerShown: true,
                   title: 'Create Event',
-                }}
+                  headerBlurEffect: 'dark',
+                  headerShadowVisible: false,
+                  headerBackVisible: true,
+                  headerBackTitleVisible: true,
+                  headerBackTitle: 'sdf',
+                  headerLeft: () => (
+                    <Button
+                      onPress={() => navigation.goBack()}
+                      title="Cancel"
+                      color="red"
+                    />
+                  ),
+                  headerRight: () => (
+                    <CreateEventHeaderRightComp navigation={navigation} />
+                  ),
+                })}
                 name="CreateEvent"
                 component={CreateEvent}
+              />
+              <Stack.Screen
+                options={({ navigation }) => ({
+                  presentation: 'modal',
+                  title: '',
+                  headerLeft: () => (
+                    <Button
+                      onPress={() => navigation.goBack()}
+                      title="Cancel"
+                      color="#000"
+                    />
+                  ),
+                  headerRight: () => (
+                    <HeaderRightComp navigation={navigation} />
+                  ),
+                })}
+                name="profile-image-change"
+                component={ProfileImageChange}
               />
             </>
           )}
@@ -91,3 +131,4 @@ export default function App() {
     </Provider>
   );
 }
+// export NODE_TLS_REJECT_UNAUTHORIZED='0'
