@@ -82,7 +82,7 @@ function MakePost() {
   };
   console.log('sliderKm', sliderKm);
   var x;
-
+const A_SECRET = "ZWVTjPQSdhwRgl204Hc51YCsritMIzn8B=/p9UyeX7xu6KkAGqfm3FJ+oObLDNEva"
   return (
     <View style={styles.contentContainer}>
       <View style={{ width: '100%' }}>
