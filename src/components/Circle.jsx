@@ -9,10 +9,10 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: 'yellow',
     flexDirection: 'row',
-    borderRadius: '50%',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 5,
+    borderRadius: 50,
   },
   circle: {
     width: 30,
@@ -38,11 +38,11 @@ const styles = StyleSheet.create({
   },
   pin1: {
     position: 'relative',
-    // borderRadius: '50%',
-    borderTopEndRadius: '50%',
-    borderBottomEndRadius: '50%',
-    borderTopRightRadius: '50%',
-    borderTopLeftRadius: '50%',
+    borderRadius: 50,
+    borderTopEndRadius: 50,
+    borderBottomEndRadius: 50,
+    borderTopRightRadius: 50,
+    borderTopLeftRadius: 50,
     borderStyle: 'solid',
     borderColor: '#fff',
     borderWidth: 1,
@@ -110,7 +110,7 @@ export function IntersectingCircles({ count, cluster }) {
         {newClusters.map((post, index) => (
           // console.log('newClusters', post, newClusters.length);
           <Circle
-            imageId={post.user.imageId}
+            imageId={post.user?.imageId || 0}
             key={index}
             zIndex={count - index}
             top={0}

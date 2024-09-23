@@ -9,6 +9,7 @@ import { Marker } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
+import { BlurView } from 'expo-blur';
 import { getImage } from '../utils/helpers';
 import usePostNearByme from '../hooks/usePostNearByme';
 import ClusteredMapView from './ClusteredMapView/ClusteredMapView';
@@ -29,15 +30,6 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
-  customMarker: {
-    position: 'relative',
-    width: 200,
-    height: 200,
-    borderRadius: '50%',
-    backgroundColor: '#red',
-    borderColor: 'black',
-    borderWidth: 2,
-  },
   roundView: {
     position: 'relative',
     width: 30,
@@ -226,7 +218,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
           position: 'absolute',
           top: 70,
           right: 30,
-          backgroundColor: '#FBFBFB',
+          // backgroundColor: '#FBFBFB',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
@@ -234,56 +226,83 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
           borderTopLeftRadius: 10,
           borderBottomLeftRadius: 10,
           borderBottomRightRadius: 10,
+          borderRadius: 10,
         }}
       >
-        <TouchableOpacity
+        <BlurView
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            direction: 'rtl',
-            textAlign: 'right',
-            float: 'right',
-            width: 40,
-            height: 40,
-            borderBottomWidth: 0.3,
-            borderBottomColor: '#B7B7B5',
+            borderRadius: 10,
+            overflow: 'hidden',
           }}
-          activeOpacity={0.7}
-          onPress={animateToRegion}
         >
-          {/* <MaterialCommunityIcons
-            name="navigation-variant"
-            size={24}
-            color="black"
-          /> */}
-          <Compass />
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => setShowActiveUsers((prev) => !prev)}
-        >
-          <View
+          <TouchableOpacity
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              direction: 'rtl',
+              textAlign: 'right',
+              float: 'right',
+              width: 40,
+              height: 40,
+              borderBottomWidth: 0.3,
+              borderBottomColor: '#B7B7B5',
+              // borderWidth: 1,
+            }}
+            // activeOpacity={0.7}
+            onPress={animateToRegion}
+          >
+            {/* <MaterialCommunityIcons
+            name="navigation-variant"
+            size={24}
+            color="black"
+          /> */}
+            <Compass style={{ borderRadius: 10 }} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            // activeOpacity={0.7}
+            onPress={() => setShowActiveUsers((prev) => !prev)}
+          >
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 40,
+                height: 40,
+                borderBottomWidth: 0.3,
+                borderBottomColor: '#B7B7B5',
+              }}
+            >
+              {!showActiveUsers && (
+                <Octicons name="people" size={24} color="#6C6C6C" />
+              )}
+              {showActiveUsers && (
+                <MaterialCommunityIcons
+                  name="post-outline"
+                  size={24}
+                  color="#6C6C6C"
+                />
+              )}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              direction: 'rtl',
+              textAlign: 'right',
+              float: 'right',
               width: 40,
               height: 40,
             }}
+            // activeOpacity={0.7}
+            onPress={animateToRegion}
           >
-            {!showActiveUsers && (
-              <Octicons name="people" size={24} color="#6C6C6C" />
-            )}
-            {showActiveUsers && (
-              <MaterialCommunityIcons
-                name="post-outline"
-                size={24}
-                color="#6C6C6C"
-              />
-            )}
-          </View>
-        </TouchableOpacity>
+            <Compass style={{ borderRadius: 10 }} />
+          </TouchableOpacity>
+        </BlurView>
       </View>
     </View>
   );
