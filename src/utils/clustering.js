@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const earthRadius = 6371; // Radius of the Earth in kilometers
 
@@ -21,3 +22,5 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
   return distance; // Distance in kilometers
 };
+const x = 10;
+export default x;

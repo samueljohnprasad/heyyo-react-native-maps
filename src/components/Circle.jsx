@@ -110,7 +110,7 @@ export function IntersectingCircles({ count, cluster }) {
         {newClusters.map((post, index) => (
           // console.log('newClusters', post, newClusters.length);
           <Circle
-            imageId={post.user.imageId}
+            imageId={post.user?.imageId || 0}
             key={index}
             zIndex={count - index}
             top={0}

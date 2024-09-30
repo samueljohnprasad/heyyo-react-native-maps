@@ -30,7 +30,6 @@ import InputScreen from '../components/InputScreen';
 import { socket } from '../network/socket';
 import { TOKEN_KEY_USER_DETAILS } from '../../AuthContext';
 import UserProfileTag from '../components/UserProfileTag';
-// export NODE_TLS_REJECT_UNAUTHORIZED='0'
 
 const styles = StyleSheet.create({
   commentContainer: {
@@ -95,8 +94,8 @@ export default function PostOverViewModal({ route }) {
     try {
       const result = await fetch(
         !comments.length
-          ? `${getBaseUrl()}/post/${route.params.cluster._id}?page=10`
-          : `${getBaseUrl()}/post/${
+          ? `${getBaseUrl()}/posts/post/${route.params.cluster._id}?page=10`
+          : `${getBaseUrl()}/posts/post/${
               route.params.cluster._id
             }?page=10&timestamp=${comments[comments.length - 1].createdAt}`,
       ).then((res) => res.json());
@@ -114,9 +113,16 @@ export default function PostOverViewModal({ route }) {
   };
 
   useEffect(() => {
-    socket.on('newComment', (comment) => {
-      setComments((prevComments) => [comment, ...prevComments]);
+    socket.emit('joinPostRoom', route.params.cluster._id);
+
+    socket.on('newComment', (data) => {
+      if (data.postId === route.params.cluster._id) {
+        setComments((prevComments) => [data.comment, ...prevComments]);
+      }
     });
+    return () => {
+      socket.emit('leavePostRoom', route.params.cluster._id);
+    };
   }, []);
 
   const getDistanceHandler = () =>
@@ -140,7 +146,7 @@ export default function PostOverViewModal({ route }) {
     const { userId } = JSON.parse(localData);
 
     try {
-      socket.emit('postComment', {
+      socket.emit('postComment', route.params.cluster._id, {
         postId: route.params.cluster._id,
         comment: comment.trim(),
         userId,
@@ -180,7 +186,7 @@ export default function PostOverViewModal({ route }) {
         >
           <TouchableOpacity activeOpacity={0.7}>
             <View style={{ width: 40, height: 40 }}>
-              {getImage(route.params.cluster.user.imageId)}
+              {getImage(route.params?.cluster?.user?.imageId || 0)}
             </View>
           </TouchableOpacity>
           <Text
@@ -190,7 +196,7 @@ export default function PostOverViewModal({ route }) {
               fontSize: 16,
             }}
           >
-            {route.params.cluster.user.userName}
+            {route.params.cluster.user?.userName}
           </Text>
         </View>
         <Text style={{ color: '#404040' }}>{route.params.cluster.message}</Text>
