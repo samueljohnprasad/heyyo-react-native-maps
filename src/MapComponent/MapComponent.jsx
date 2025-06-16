@@ -1,14 +1,25 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable object-curly-newline */
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable implicit-arrow-linebreak */
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Platform,
+  Text,
+} from 'react-native';
 import { Marker } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
-import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
+import {
+  MaterialCommunityIcons,
+  Octicons,
+  FontAwesome5,
+} from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
 import { getImage } from '../utils/helpers';
 import usePostNearByme from '../hooks/usePostNearByme';
 import ClusteredMapView from './ClusteredMapView/ClusteredMapView';
@@ -16,8 +27,27 @@ import { updateSelectedCluster } from '../store/post.reducer';
 import { IntersectingCircles } from '../components/Circle';
 import Compass from '../ComponentsSvg/Compass';
 import useGetNearByMePost from '../hooks/useGetNearByMePost';
+import LocationStoryMarker from './LocationStoryMarker';
+import { fetchNearbyPolls } from '../store/pollSlice';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
+  fab: {
+    position: 'absolute',
+    bottom: 32,
+    right: 24,
+    backgroundColor: '#00B386',
+    borderRadius: 32,
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 6,
+    zIndex: 99,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -47,14 +77,6 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     borderColor: 'black',
     borderWidth: 1,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 1.84,
-      },
-    }),
   },
   roundViewRed: {
     position: 'relative',
@@ -94,15 +116,48 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
   },
+  createStoryButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: '#00B386',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
 });
 
-export default function MapComponent({ latitude, longitude, activeUsers }) {
+export default function MapComponent({
+  latitude,
+  longitude,
+  activeUsers,
+  locationStories = [],
+}) {
   const dispatch = useDispatch();
   const mapRef = useRef(null);
   const [showActiveUsers, setShowActiveUsers] = useState(false);
+  const [showStories, setShowStories] = useState(true);
+  const [mapCenter, setMapCenter] = useState({ latitude: 0, longitude: 0 });
   const getNearByMePosts = useGetNearByMePost();
   const { navigate } = useNavigation();
   const postNearByme = usePostNearByme();
+
+  // Polls state
+  const polls = useSelector((state) => state.poll.polls);
+
   useEffect(() => {
     getNearByMePosts();
     // dispatch(getNearByMePost({ latitude, longitude, distance: 10000 }));
@@ -115,6 +170,19 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
     mapRef.current.animateToRegion(region, 1 * 1000);
   }, [latitude, longitude]);
 
+  // Fetch polls on mount and when mapCenter changes
+  useEffect(() => {
+    if (mapCenter.latitude && mapCenter.longitude) {
+      dispatch(
+        fetchNearbyPolls({
+          latitude: mapCenter.latitude,
+          longitude: mapCenter.longitude,
+          radius: 5000,
+        }),
+      );
+    }
+  }, [mapCenter, dispatch]);
+
   const onMapPostClick = (selectedCluster, cluster) => {
     if (cluster.length === 1) {
       navigate('PostOverViewModal', { cluster: cluster[0] });
@@ -122,6 +190,14 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
     }
     // setSliderPosts(cluster);
     dispatch(updateSelectedCluster({ selectedCluster }));
+  };
+
+  const handleStoryMarkerPress = (storyId) => {
+    navigate('LocationStoryDetail', { storyId });
+  };
+
+  const handleCreateStory = () => {
+    navigate('CreateLocationStory', { latitude, longitude });
   };
 
   const animateToRegion = () => {
@@ -134,7 +210,7 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
 
     mapRef.current.animateToRegion(region, 2000);
   };
-
+  console.log('locationStories', locationStories);
   return (
     <View style={styles.container}>
       <ClusteredMapView
@@ -162,6 +238,12 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
         // userInterfaceStyle="dark"
         // userLocationFastestInterval={5000}
         // onUserLocationChange={() => console.log('onUserLocationChange')}
+        onRegionChangeComplete={(region) => {
+          setMapCenter({
+            latitude: region.latitude,
+            longitude: region.longitude,
+          });
+        }}
       >
         {showActiveUsers &&
           activeUsers.map((map, index) => (
@@ -182,6 +264,50 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
               </TouchableOpacity>
             </Marker>
           ))}
+
+        {/* Poll Markers */}
+        {polls &&
+          polls.map((poll) => (
+            <Marker
+              key={poll._id}
+              coordinate={{
+                latitude: poll.location.coordinates[1],
+                longitude: poll.location.coordinates[0],
+              }}
+              title={poll.title}
+              description={poll.topic}
+            >
+              <MaterialCommunityIcons name="poll" size={32} color="#00B386" />
+            </Marker>
+          ))}
+
+        {locationStories.map((story) => (
+          <Marker
+            photosLength={1}
+            photo={1}
+            tracksViewChanges
+            key={story._id}
+            coordinate={{
+              latitude: story.location.coordinates[1],
+              longitude: story.location.coordinates[0],
+            }}
+            // onCalloutPress={() => handleStoryMarkerPress(story._id)}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                handleStoryMarkerPress(story._id);
+              }}
+            >
+              <LocationStoryMarker
+                story={story}
+                onPress={() => {
+                  console.log('storyId >>', story._id);
+                  handleStoryMarkerPress(story._id);
+                }}
+              />
+            </TouchableOpacity>
+          </Marker>
+        ))}
         {!showActiveUsers &&
           postNearByme.map((cluster, index) => (
             <Marker
@@ -284,16 +410,76 @@ export default function MapComponent({ latitude, longitude, activeUsers }) {
             )}
           </View>
         </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => setShowStories((prev) => !prev)}
+        >
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 40,
+              height: 40,
+              borderTopWidth: 0.3,
+              borderTopColor: '#B7B7B5',
+            }}
+          >
+            <FontAwesome5
+              name="book-open"
+              size={20}
+              color={showStories ? '#00B386' : '#6C6C6C'}
+            />
+          </View>
+        </TouchableOpacity>
+        {/* Poll FAB - above Create Story button */}
+        <TouchableOpacity
+          style={[styles.fab, { bottom: 100 }]}
+          activeOpacity={0.85}
+          onPress={() => navigate('PollCreationScreen', mapCenter)}
+        >
+          <MaterialCommunityIcons name="poll" size={28} color="#fff" />
+        </TouchableOpacity>
       </View>
+      {/* Book Open Button */}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => setShowStories((prev) => !prev)}
+      >
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 40,
+            height: 40,
+            borderTopWidth: 0.3,
+            borderTopColor: '#B7B7B5',
+          }}
+        >
+          <FontAwesome5
+            name="book-open"
+            size={20}
+            color={showStories ? '#00B386' : '#6C6C6C'}
+          />
+        </View>
+      </TouchableOpacity>
+      {/* Poll FAB - above Create Story button */}
+      <TouchableOpacity
+        style={[styles.fab, { bottom: 100 }]}
+        activeOpacity={0.85}
+        onPress={() => navigate('PollCreationScreen', mapCenter)}
+      >
+        <MaterialCommunityIcons name="poll" size={28} color="#fff" />
+      </TouchableOpacity>
+      {/* Location Story Create Button */}
+      <TouchableOpacity
+        style={styles.createStoryButton}
+        activeOpacity={0.7}
+        onPress={handleCreateStory}
+      >
+        <FontAwesome5 name="plus" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
-
-// ...Platform.select({
-//   ios: {
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.3,
-//     shadowRadius: 2.84,
-//   },
-// }),

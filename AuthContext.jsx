@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import { getBaseUrl } from './helpers';
 import { updateUserNameAndId } from './src/store/reducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const TOKEN_KEY_USER_DETAILS = 'sdfjksd';
 export const LOCATION_COORDS = 'LOCATION_COORDS';
@@ -62,11 +63,12 @@ export function AuthProvider({ children }) {
   const guestLogin = async () => {
     try {
       setIsAuthLoading(true);
-      const guestUrl = `${getBaseUrl()}/guest-login`;
+      const guestUrl = `${getBaseUrl()}/users/guest-login`;
 
-      const result = await axios.post(guestUrl);
+      const result = await axios.get(guestUrl);
 
       const { token, userName, userId, imageId } = result.data;
+      await AsyncStorage.setItem('token', token);
       setAuthState({
         token,
         authenticated: true,

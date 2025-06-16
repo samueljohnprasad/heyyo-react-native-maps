@@ -58,6 +58,7 @@ export function ShowTime({ date }) {
 }
 
 function Comment({ comment }) {
+  console.log('comment', comment.user);
   return (
     <View style={styles.commentContainer}>
       <View
@@ -68,10 +69,10 @@ function Comment({ comment }) {
           alignItems: 'center',
         }}
       >
-        <UserProfileTag userName={comment.user.userName} />
-        <ShowTime date={comment.createdAt} />
+        <UserProfileTag userName={comment?.user?.userName} />
+        {comment?.createdAt && <ShowTime date={comment?.createdAt} />}
       </View>
-      <Text style={styles.text}>{comment.text}</Text>
+      <Text style={styles.text}>{comment?.text}</Text>
     </View>
   );
 }
@@ -95,8 +96,8 @@ export default function PostOverViewModal({ route }) {
     try {
       const result = await fetch(
         !comments.length
-          ? `${getBaseUrl()}/post/${route.params.cluster._id}?page=10`
-          : `${getBaseUrl()}/post/${
+          ? `${getBaseUrl()}/posts/post/${route.params.cluster._id}?page=10`
+          : `${getBaseUrl()}/posts/post/${
               route.params.cluster._id
             }?page=10&timestamp=${comments[comments.length - 1].createdAt}`,
       ).then((res) => res.json());
@@ -114,10 +115,17 @@ export default function PostOverViewModal({ route }) {
   };
 
   useEffect(() => {
+    if (route.params.cluster._id) {
+      socket.emit('joinPostRoom', route.params.cluster._id);
+    }
     socket.on('newComment', (comment) => {
-      setComments((prevComments) => [comment, ...prevComments]);
+      console.log('newComment', comment);
+      setComments((prevComments) => [...prevComments, comment]);
     });
-  }, []);
+    return () => {
+      socket.emit('leavePostRoom', route.params.cluster._id);
+    };
+  }, [route.params.cluster._id]);
 
   const getDistanceHandler = () =>
     getDistance(
@@ -138,7 +146,7 @@ export default function PostOverViewModal({ route }) {
   const addCommentHandler = async (comment) => {
     const localData = await secureStore.getItemAsync(TOKEN_KEY_USER_DETAILS);
     const { userId } = JSON.parse(localData);
-
+    console.log('postComment', route.params.cluster._id);
     try {
       socket.emit('postComment', {
         postId: route.params.cluster._id,
@@ -205,7 +213,7 @@ export default function PostOverViewModal({ route }) {
         ref={flatlistRef}
         data={[...comments]}
         renderItem={({ item }) => <Comment comment={item} />}
-        keyExtractor={(item, index) => item._id.toString() + index}
+        keyExtractor={(item, index) => item._id?.toString() || index.toString()}
         onEndReached={loadMoreComments}
         onEndReachedThreshold={0.01}
         // ListFooterComponent={() => <ActivityIndicator />}

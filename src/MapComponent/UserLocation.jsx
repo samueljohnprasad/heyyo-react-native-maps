@@ -18,6 +18,7 @@ import {
   TOKEN_KEY_USER_DETAILS,
 } from '../../AuthContext';
 import { socket } from '../network/socket';
+import { fetchNearbyStories } from '../store/locationStorySlice';
 
 // const StyledBottom = styled.View`
 //   height: 200px;
@@ -35,6 +36,7 @@ export default function UserLocation() {
     userDetails: { userId },
   } = useAuth();
   const [activeUsers, setActiveUsers] = useState([]);
+  const locationStories = useSelector((state) => state.locationStory.nearbyStories);
 
   useEffect(() => {
     (async () => {
@@ -81,6 +83,14 @@ export default function UserLocation() {
           longitude: location.coords.longitude,
         }),
       );
+      
+      // Fetch nearby location stories
+      dispatch(fetchNearbyStories({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        radius: 10000 // 10km radius
+      }));
+      
       setTimeout(() => {
         dispatch(
           updateUserCurrentLocationAction({
@@ -143,6 +153,7 @@ export default function UserLocation() {
         activeUsers={activeUsers}
         latitude={latitude}
         longitude={longitude}
+        locationStories={locationStories}
       />
       <BottomSheetRef />
     </View>

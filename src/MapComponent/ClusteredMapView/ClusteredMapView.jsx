@@ -288,7 +288,7 @@ ClusteredMapView.defaultProps = {
   layoutAnimationConf: LayoutAnimation.Presets.spring,
   tracksViewChanges: false,
   // SuperCluster parameters //to change cluster distance
-  radius: Dimensions.get('window').width * 0.005,
+  radius: Dimensions.get('window').width * 0.09,
   maxZoom: 20,
   minZoom: 1,
   minPoints: 2,
@@ -314,4 +314,4 @@ ClusteredMapView.defaultProps = {
 };
 
 ClusteredMapView.displayName = 'ClusteredMapView';
-export default memo(ClusteredMapView);
+export default ClusteredMapView;

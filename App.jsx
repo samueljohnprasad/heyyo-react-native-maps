@@ -13,10 +13,16 @@ import UserLocation from './src/MapComponent/UserLocation';
 import LoginPage from './src/MapComponent/LoginPage';
 import { store } from './src/store/index';
 import { useAuth, AuthProvider } from './AuthContext';
-import UserProfile from './src/MapComponent/UserProfile';
-import PostOverViewModal from './src/MapComponent/PostOverViewModal';
-import PageOverLay from './src/MapComponent/PageOverLay';
-import CreateEvent from './src/MapComponent/CreateEvent';
+import {
+  MapComponent,
+  UserProfile,
+  PostOverViewModal,
+  PageOverLay,
+  CreateEvent,
+  LocationStoryDetailScreen,
+  CreateLocationStoryScreen,
+  PollCreationScreen,
+} from './src/MapComponent';
 
 TimeAgo.addLocale(en);
 
@@ -68,6 +74,30 @@ export function Layout() {
                 }}
                 name="CreateEvent"
                 component={CreateEvent}
+              />
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+                name="LocationStoryDetail"
+                component={LocationStoryDetailScreen}
+              />
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+                name="CreateLocationStory"
+                component={CreateLocationStoryScreen}
+              />
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+                name="PollCreationScreen"
+                component={PollCreationScreen}
               />
             </>
           )}

@@ -16,6 +16,7 @@
     "@gorhom/bottom-sheet": "^4",
     "@gorhom/showcase-template": "^3.0.2",
     "@mapbox/geo-viewport": "^0.5.0",
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-community/slider": "4.4.2",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.13",
